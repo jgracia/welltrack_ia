@@ -1,0 +1,143 @@
+{% load static %}
+
+<!-- Modal -->
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <form role="form" method="post" action="{% url 'employee:edit_profile'  %}" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="modal-header bg-info ">
+        <h5 class="modal-title" id="exampleModalLabel">
+          {{ _("Edit profile") }}</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="font-bold mb-0">{{ _("Complete the following form and click the <i>Save</i> button.") }}</p>
+
+        
+        
+          <!--
+          <div class="form-row">
+            <div class="col-md-5">
+              <div class="form-group">
+                <label class="small mb-1">Nombre de usuario:</label>
+                    {{ user_form.username }}
+                <label class="small mb-1">Correo electrónico:</label>
+                    {{ user_form.email }}
+              </div>
+              <div class="form-group">
+                <a href="#">Cambiar contraseña</a>
+                <hr>
+                <label class="small mb-1">Cambiar Avatar:</label>
+                {{ profile_form.image }}
+              </div>
+              <label class="small mb-1">Biografía:</label> {{ profile_form.bio }}
+            </div>
+          </div>
+          <br><br>
+          -->
+          
+          {{ user_form.as_p }}
+          
+          <div class="form-group">
+            
+            <a href="#" class="js-password-change" data-url="{% url 'modal_password_change' %}">
+              {{ _("Change password") }}</a>
+            
+            <hr>
+          </div>
+
+          {{ profile_form.as_p }}
+
+        <div class="text-center text-muted py-2"><b style="color: #dc3545;">*</b> {{ _("Required fields") }}</div>
+        
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id='btnClose'>{{ _("Close") }}</button>
+        <button type="submit" class="btn btn-primary" id='btnSubmit'>{{ _("Save") }}</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{# CRUD AJAX Change Password #}
+<script src="{% static 'js/modal_password_change.js' %}"></script>
+
+<script type="text/javascript">
+  $("form select").addClass("form-select");
+
+  jQuery(document).ready(function() {
+
+    //var token = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    jQuery("form").submit(function(event) {
+      event.preventDefault();
+
+      // desactivar botón cerrar
+      //var btnClose = document.getElementById('btnClose');
+      //btnClose.disabled = true;
+
+      // desactivar botón guardar
+      /*var button = document.getElementById('btnSubmit');
+      button.disabled = true;
+      button.innerText = "Por favor espere...";*/
+
+      const url = this.action;
+      const formData = new FormData(event.currentTarget)
+      
+      fetch(url, {
+        method: 'POST', // The method
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData,
+      }).then(response => {
+        // Do whatever with returnedData
+        console.log(response)
+        if (response.ok) {
+          location.reload(true);
+        } else {
+          //return Promise.reject('Something went wrong!')
+          return response.json().then(json => {
+            return response.ok ? json : Promise.reject(json);
+          });
+        }
+      }).catch(err => {
+        // habilita botón submit
+        //btnClose.disabled = false;
+        /*button.disabled = false;
+        button.innerText = "Guardar";*/
+
+        // In case it errors.
+        // console.log(err)
+        const app = document.querySelector('meta[name="app-name"]').content;
+        const title = app + " - {{ _('Failure') }}";
+        //const title = "Falla"
+
+        //console.log(err)
+        var message = "";
+        for (var key in err) {
+          //console.log("key " + key + " has value " + err[key]);
+          //console.log(key + ":" + err[key]);
+          message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
+        }
+
+        Notiflix.Report.init({
+          plainText: false,
+          //svgSize:"60px",
+          messageMaxLength: 1024,
+        });
+        Notiflix.Report.failure(
+          title,
+          message,
+          'Ok'
+        );
+      })
+
+    });
+  });
+</script>

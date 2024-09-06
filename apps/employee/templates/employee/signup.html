@@ -1,0 +1,263 @@
+{% load widget_tweaks %}
+{% load static %}
+
+<!-- Modal -->
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <form role="form" action="{% url 'employee:signup' %}" method="post" autocomplete="off">
+      {% csrf_token %}
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="extraModalLabel">
+          {{ _("Create employee") }}
+        </h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <label for="id_username" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("User name") }}
+            </label>
+            {% if form.username.errors %}
+              <div class="alert alert-danger">
+                {{ form.username.errors }}
+              </div>
+            {% endif %}
+            {{ form.username|add_class:'form-control' }}
+            {% if form.username.help_text %}
+              <small class="form-text text-muted">
+                {{ form.username.help_text }}
+              </small>
+            {% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="id_password1" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("Password") }}
+            </label>
+            {% if form.password1.errors %}
+              <div class="alert alert-danger">
+                {{ form.password1.errors }}
+              </div>
+            {% endif %}
+            {{ form.password1|add_class:'form-control' }}
+            {% if form.password1.help_text %}
+              <small class="form-text text-muted">
+                {{ form.password1.help_text }}
+              </small>
+            {% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="id_password2" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("Password (confirmation)") }}
+            </label>
+            {% if form.password2.errors %}
+              <div class="alert alert-danger">
+                {{ form.password2.errors }}
+              </div>
+            {% endif %}
+            {{ form.password2|add_class:'form-control' }}
+            {% if form.password2.help_text %}
+              <small class="form-text text-muted">
+                {{ form.password2.help_text }}
+              </small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <label for="id_email" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("Email") }}
+            </label>
+            {% if form.email.errors %}
+              <div class="alert alert-danger">
+                {{ form.email.errors }}
+              </div>
+            {% endif %}
+            {{ form.email|add_class:'form-control' }}
+            {% if form.email.help_text %}
+              <small class="form-text text-muted">
+                {{ form.email.help_text }}
+              </small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="id_first_name" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("First name") }}
+            </label>
+            {% if form.first_name.errors %}
+              <div class="alert alert-danger">
+                {{ form.first_name.errors }}
+              </div>
+            {% endif %}
+            {{ form.first_name|add_class:'form-control' }}
+            {% if form.first_name.help_text %}
+              <small class="form-text text-muted">
+                {{ form.first_name.help_text }}
+              </small>
+            {% endif %}
+          </div>
+          <div class="col">
+            <label for="id_last_name" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("Last name") }}
+            </label>
+            {% if form.last_name.errors %}
+              <div class="alert alert-danger">
+                {{ form.last_name.errors }}
+              </div>
+            {% endif %}
+            {{ form.last_name|add_class:'form-control' }}
+            {% if form.last_name.help_text %}
+              <small class="form-text text-muted">
+                {{ form.last_name.help_text }}
+              </small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="id_identity_document" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("Identity Document") }}
+            </label>
+            {% if form.identity_document.errors %}
+              <div class="alert alert-danger">
+                {{ form.identity_document.errors }}
+              </div>
+            {% endif %}
+            {{ form.identity_document|add_class:'form-control' }}
+            {% if form.identity_document.help_text %}
+              <small class="form-text text-muted">
+                {{ form.identity_document.help_text }}
+              </small>
+            {% endif %}
+          </div>
+          <div class="col">
+            <label for="id_birth_date" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("Birth Date") }}
+            </label>
+            {% if form.birth_date.errors %}
+              <div class="alert alert-danger">
+                {{ form.birth_date.errors }}
+              </div>
+            {% endif %}
+            {{ form.birth_date|add_class:'form-control' }}
+            {% if form.birth_date.help_text %}
+              <small class="form-text text-muted">
+                {{ form.birth_date.help_text }}
+              </small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="id_work_shift" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("Work shift") }}
+            </label>
+            {% if form.work_shift.errors %}
+              <div class="alert alert-danger">
+                {{ form.work_shift.errors }}
+              </div>
+            {% endif %}
+            {{ form.work_shift|add_class:'form-control' }}
+            {% if form.work_shift.help_text %}
+              <small class="form-text text-muted">
+                {{ form.identitwork_shifty_document.help_text }}
+              </small>
+            {% endif %}
+          </div>
+          <div class="col">
+            <label for="id_worker_area" class="col-form-label">
+              <b style="color: #dc3545;">*</b> {{ _("Worker area") }}
+            </label>
+            {% if form.worker_area.errors %}
+              <div class="alert alert-danger">
+                {{ form.worker_area.errors }}
+              </div>
+            {% endif %}
+            {{ form.worker_area|add_class:'form-control' }}
+            {% if form.worker_area.help_text %}
+              <small class="form-text text-muted">
+                {{ form.worker_area.help_text }}
+              </small>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="text-center text-muted mt-3 fw-bold">
+          <b style="color: #dc3545;">*</b> {{ _("Required fields") }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save fa-lg me-2"></i>{{ _("Save") }}
+        </button>
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">{{ _("Close") }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  jQuery("form").submit(function(event) {
+    event.preventDefault();
+
+    var url = this.action;
+    var formData = new FormData(event.currentTarget)
+
+    fetch(url, {
+      method: 'POST', // The method
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData,
+    }).then(response => {
+      // Do whatever with returnedData
+      if (response.ok) {
+        location.reload(true);
+      } else {
+        //return Promise.reject('Something went wrong!')
+        return response.json().then(json => {
+          return response.ok ? json : Promise.reject(json);
+        });
+      }
+    }).catch(err => {
+      // In case it errors.
+      // console.log(err)
+      const app = document.querySelector('meta[name="app-name"]').content;
+      const title = app + " - {{ _('Failure') }}";
+      //const title = "Falla"
+
+      //console.log(err)
+      var message = "";
+      for (var key in err) {
+        //console.log("key " + key + " has value " + err[key]);
+        //console.log(key + ":" + err[key]);
+        message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
+      }
+
+      Notiflix.Report.init({
+        plainText: false,
+        //svgSize:"60px",
+        messageMaxLength: 1024,
+      });
+      Notiflix.Report.failure(
+        title,
+        message,
+        'Ok'
+      );
+    })
+
+  });
+</script>

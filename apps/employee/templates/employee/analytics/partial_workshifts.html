@@ -1,0 +1,18 @@
+{% load i18n %}
+
+{% for qs in object_list %}
+  <tr>
+    <td>{{ qs.profile.work_shift }}</td>
+    <td>{{ qs.emotions_detected.emotions.sad|floatformat:2 }}%</td>
+    <td>{{ qs.emotions_detected.emotions.fear|floatformat:2 }}%</td>
+    <td>{{ qs.emotions_detected.emotions.angry|floatformat:2 }}%</td>
+    <td>{{ qs.emotions_detected.emotions.happy|floatformat:2 }}%</td>
+    <td>{{ qs.emotions_detected.emotions.disgust|floatformat:2 }}%</td>
+    <td>{{ qs.emotions_detected.emotions.neutral|floatformat:2 }}%</td>
+    <td>{{ qs.emotions_detected.emotions.surprise|floatformat:2 }}%</td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-info">{{ _("No data available.") }}</td>
+  </tr>
+{% endfor %}

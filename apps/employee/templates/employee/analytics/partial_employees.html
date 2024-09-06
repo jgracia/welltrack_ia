@@ -1,0 +1,61 @@
+{% load humanize %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% for qs in object_list %}
+  <tr>
+    <td>{{ qs.profile.user.first_name }} {{ qs.profile.user.last_name }}</td>
+    <td>{{ qs.profile.work_shift }}</td>
+    <td>{{ qs.profile.worker_area }}</td>
+    <td>{{ qs.recorded_at|naturalday }}</td>
+    <td>
+      <!--
+      {% for emotion, value in qs.emotions_detected.emotions.items %}
+        {{ emotion }}: {{ value|floatformat:2 }}%<br>
+      {% endfor %}
+      -->
+      {% for emotion, value in qs.emotions_detected.emotions.items %}
+        {% if emotion == 'sad' %}
+          😢
+        {% elif emotion == 'fear' %}
+          😨
+        {% elif emotion == 'angry' %}
+          😠
+        {% elif emotion == 'happy' %}
+          😊
+        {% elif emotion == 'disgust' %}
+          🤢
+        {% elif emotion == 'neutral' %}
+          😐
+        {% elif emotion == 'surprise' %}
+          😲
+        {% endif %}
+        {% trans emotion %}: {{ value|floatformat:2 }}%
+        <div class="progress">
+          <div
+            class="progress-bar 
+              {% if emotion == 'sad' %} progress-bar-striped bg-danger 
+              {% elif emotion == 'fear' %} progress-bar progress-bar-striped bg-warning
+              {% elif emotion == 'angry' %} progress-bar progress-bar-striped bg-info
+              {% elif emotion == 'happy' %} progress-bar progress-bar-striped bg-success
+              {% elif emotion == 'disgust' %} progress-bar progress-bar-striped bg-warning
+              {% elif emotion == 'neutral' %} progress-bar progress-bar-striped
+              {% elif emotion == 'surprise' %} progress-bar progress-bar-striped bg-info
+              {% endif %}"
+            role="progressbar"
+            style="width: {{ value|floatformat:2|replace_comma }}%;"
+            aria-valuenow="{{ value|floatformat:2|replace_comma }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        </div>
+        <br>
+      {% endfor %}
+    </td>
+    <td>{% trans qs.emotions_detected.dominant_emotion %}</td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="6" class="text-center bg-info">{{ _("There are no processed emotions.") }}</td>
+  </tr>
+{% endfor %}

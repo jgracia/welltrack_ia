@@ -1,0 +1,87 @@
+{% load widget_tweaks %}
+{% load static %}
+
+<!-- Modal -->
+<div class="modal-dialog">
+  <div class="modal-content">
+    {% if obj %}
+    <form role="form" action="{% url 'employee:work_shift_edit' obj.pk %}" method="post" autocomplete="off">
+    {% else %}
+    <form role="form" action="{% url 'employee:work_shift_new' %}" method="post" autocomplete="off">
+    {% endif %}
+      {% csrf_token %}
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="extraModalLabel">
+          {% if obj %} {{ _("Edit") }} {% else %} {{ _("Create") }} {% endif %} {{ _("work shift") }}
+        </h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="row">
+          {{ form.as_p }}
+        </div>
+        <div class="text-center text-muted mt-3 fw-bold"><b style="color: #dc3545;">*</b> {{ _("Required fields") }}</div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save fa-lg me-2"></i>{{ _("Save") }}</button>
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">{{ _("Close") }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+  jQuery("form").submit(function(event) {
+    event.preventDefault();
+
+    var url = this.action;
+    var formData = new FormData(event.currentTarget)
+
+    fetch(url, {
+      method: 'POST', // The method
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData,
+    }).then(response => {
+      // Do whatever with returnedData
+      if (response.ok) {
+        location.reload(true);
+      } else {
+        //return Promise.reject('Something went wrong!')
+        return response.json().then(json => {
+          return response.ok ? json : Promise.reject(json);
+        });
+      }
+    }).catch(err => {
+      // In case it errors.
+      // console.log(err)
+      const app = document.querySelector('meta[name="app-name"]').content;
+      const title = app + " - {{ _('Failure') }}";
+      //const title = "Falla"
+
+      //console.log(err)
+      var message = "";
+      for (var key in err) {
+        //console.log("key " + key + " has value " + err[key]);
+        //console.log(key + ":" + err[key]);
+        message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
+      }
+
+      Notiflix.Report.init({
+        plainText: false,
+        //svgSize:"60px",
+        messageMaxLength: 1024,
+      });
+      Notiflix.Report.failure(
+        title,
+        message,
+        'Ok'
+      );
+    })
+
+  });
+</script>

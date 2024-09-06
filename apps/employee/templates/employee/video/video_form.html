@@ -1,0 +1,171 @@
+{% load widget_tweaks %}
+{% load static %}
+
+<!-- Modal -->
+<div class="modal-dialog">
+  <div class="modal-content">
+    {% if obj %}
+    <form role="form" action="{% url 'employee:video_edit' obj.pk %}" method="post" autocomplete="off">
+    {% else %}
+    <form role="form" action="{% url 'employee:video_new' %}" method="post" autocomplete="off">
+    {% endif %}
+      {% csrf_token %}
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="extraModalLabel">
+          {% if obj %} {{ _("Upload video") }} {% else %} {{ _("Change video") }} {% endif %}
+        </h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="row">
+          {{ form.as_p }}
+
+          {% if obj and obj.video_file %}
+            <hr class="hr bg-warning" />
+            <div class="form-group">
+                <label for="id_video_file">{{ _("Uploaded video file") }}</label><br>
+                <a href="{{ obj.video_file.url }}" target="_blank">{{ obj.video_filename }}</a>
+            </div>
+          {% endif %}
+        </div>
+        <div class="text-center text-muted mt-3 fw-bold"><b style="color: #dc3545;">*</b> {{ _("Required fields") }}</div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save fa-lg me-2"></i>{{ _("Save") }}</button>
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">{{ _("Close") }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+  jQuery("form").submit(function(event) {
+    event.preventDefault();
+
+    var url = this.action;
+    var formData = new FormData(event.currentTarget)
+
+    fetch(url, {
+      method: 'POST', // The method
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData,
+    }).then(response => {
+      // Do whatever with returnedData
+      if (response.ok) {
+        //location.reload(true);
+        return response.json().then(json => {
+          //console.log(json)
+          //console.log("Procesar video pk = " + json.pk)
+          
+          // Cierra la ventana modal de subir video
+          closeModal()
+          
+          let videoId = json.pk
+          // Mostrar la ventana modal con la barra de progreso
+          var progressModal = new mdb.Modal(document.getElementById('progressModal'));
+          progressModal.show();
+
+          var progressBar = document.getElementById('progressBar');
+          var progressText = document.getElementById('progressText');
+
+          let updateProgress = function(value, text) {
+            console.log(`Actualizando barra a ${value}%`);  // Log para ver si se está actualizando el progreso
+            progressBar.style.width = value + '%';
+            progressBar.setAttribute('aria-valuenow', value);
+            progressText.innerText = text;
+          };
+
+          function checkTaskStatus(task_id) {
+            fetch(`analyze_video/task-status/${task_id}/`)
+              .then(response => response.json())
+              .then(data => {
+                console.log('Respuesta del servidor:', data);  // Log del estado y progreso
+
+                if (data.state === 'PROGRESS') {
+                  updateProgress(data.result.percent, `Progreso: ${data.result.percent}%`);
+                  setTimeout(() => checkTaskStatus(task_id), 500);  // Intervalo de 500 ms
+                } else if (data.state === 'SUCCESS') {
+                  updateProgress(100, "Finalizando...");
+
+                  // Hide the progress modal
+                  progressModal.hide();
+
+                  // Reload windows
+                  location.reload(true);
+                } else if (data.state === 'FAILURE') {
+                  updateProgress(0, "Error al generar el reporte.");
+                  progressBar.classList.remove('progress-bar-animated');
+                } else {
+                  // En caso de otros estados como PENDING
+                  setTimeout(() => checkTaskStatus(task_id), 500);  // Intervalo de 500 ms
+                }
+              })
+              .catch(error => {
+                console.error('Error al consultar el estado de la tarea:', error);
+                updateProgress(0, "Error al consultar el estado.");
+              });
+          }
+
+          // Enviar solicitud inicial al servidor
+          fetch('analyze_video', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+              video_id: videoId,
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('ID de la tarea:', data.task_id);
+            checkTaskStatus(data.task_id);
+          })
+          .catch(error => {
+            console.error('Error al enviar los datos al backend:', error);
+            updateProgress(0, "Error al iniciar el proceso.");
+            progressModal.hide();
+          });
+
+        });
+      } else {
+        //return Promise.reject('Something went wrong!')
+        return response.json().then(json => {
+          return response.ok ? json : Promise.reject(json);
+        });
+      }
+    }).catch(err => {
+      // In case it errors.
+      // console.log(err)
+      const app = document.querySelector('meta[name="app-name"]').content;
+      const title = app + " - {{ _('Failure') }}";
+      //const title = "Falla"
+
+      //console.log(err)
+      var message = "";
+      for (var key in err) {
+        //console.log("key " + key + " has value " + err[key]);
+        //console.log(key + ":" + err[key]);
+        message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
+      }
+
+      Notiflix.Report.init({
+        plainText: false,
+        //svgSize:"60px",
+        messageMaxLength: 1024,
+      });
+      Notiflix.Report.failure(
+        title,
+        message,
+        'Ok'
+      );
+    })
+
+  });
+</script>

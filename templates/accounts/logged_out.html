@@ -1,0 +1,28 @@
+{% extends "layouts/base-login.html" %}
+{% load static %}
+
+{% block title %}{{ _("See you!") }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh">
+  <div class="text-center">
+      <img
+        class="mb-4"
+        src="{% static 'img/logo/welltrack-transparent-250px.png' %}"
+      />
+      
+      <h2>{{ _("Logged out") }}</h2>
+      <p>{{ _("You have been successfully logged out.") }}</p>
+  
+      <h5 class="mb-3">{{ _("Thank you for using our product. We're glad you're with us.") }}</h5>
+      <p class="mb-3">WellTrack IA</p>
+      <a
+        class="btn btn-dark btn-lg"
+        data-mdb-ripple-init
+        href="{% url 'login' %}"
+        role="button">
+        {{ _("Log in again") }}
+      </a>
+  </div>
+</div>
+{% endblock %}

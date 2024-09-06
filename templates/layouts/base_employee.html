@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+
+<head>
+  {% include 'includes/head.html' %}
+  <title>{% block title %}{% endblock %} - {{ _("WellTrack IA") }}</title>
+  {% block extrastyle %}{% endblock extrastyle %}
+</head>
+
+<body>
+  <!--Main Navigation-->
+  <header>
+
+    {% block nav %}
+      {% include 'includes/nav.html' %}
+    {% endblock nav %}
+  </header>
+  <!--Main Navigation-->
+
+  <!--Main layout-->
+  
+    
+  {% block content %}{% endblock content %}
+  
+  <!--Main layout-->
+
+  {% include 'includes/modals.html' %}
+
+  {% include 'includes/scripts.html' %}
+
+  <script>
+    function confirmDelete(url, pk) {
+      //console.log("Direccion: ", url);
+      //console.log("PK: ", pk);
+
+      Notiflix.Confirm.init({
+        titleColor:"#ff5549", okButtonBackground:"#ff5549",
+      });
+        
+      const messageTitle = "{{ _('Confirm deletion') }}";
+      const messageText = "{{ _('Are you sure you want to delete this record?') }}";
+      const okButtonText = "{{ _('Yes') }}";
+      const cancelButtonText = "{{ _('No') }}";
+    
+      Notiflix.Confirm.show(
+        messageTitle,
+        messageText,
+        okButtonText,
+        cancelButtonText,
+        function(){
+          // Función botón SI
+          //var url = url;
+          //var data = {codigo: pk};
+    
+          fetch(url, {
+            method: 'POST', // The method
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ 'pk': pk })
+          }).then(response => {
+            // Do whatever with returnedData
+            // console.log(response)
+            if (response.ok) {
+              location.reload(true);
+            } else {
+              //return Promise.reject('Something went wrong!')
+              return response.json().then(json => {
+                return response.ok ? json : Promise.reject(json);
+              });
+            }
+          }).catch(err => {
+    
+            // In case it errors.
+            // console.log('Hubo un problema con la petición Fetch:' + err.message);
+    
+            const appName = document.querySelector('meta[name="app-name"]').content;
+            const errorTitle = appName + " - {{ _('Failure') }}";
+    
+            //console.log(err)
+            var message = "";
+            for (var key in err) {
+              //console.log("key " + key + " has value " + err[key]);
+              //console.log(key + ":" + err[key]);
+              message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
+            }
+    
+            Notiflix.Report.init({
+              plainText: false,
+              //svgSize:"60px",
+              messageMaxLength: 1024,
+            });
+            Notiflix.Report.failure(
+              errorTitle,
+              message,
+              'Ok'
+            );
+          })
+        },
+        /*function(){
+          // Función botón NO
+          alert('If you say so...');
+        }*/
+      );
+    }
+  </script>
+
+  {% block extra_js %}{% endblock extra_js %}
+
+</body>
+
+</html>

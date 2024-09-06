@@ -1,0 +1,920 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-06 16:46-0500\n"
+"PO-Revision-Date: 2024-09-06 17:35-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+"X-Generator: Poedit 2.4.3\n"
+
+#: apps/employee/forms.py:56
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:17
+msgid "Start Time"
+msgstr "Hora de inicio"
+
+#: apps/employee/forms.py:57
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:18
+msgid "End Time"
+msgstr "Hora de finalización"
+
+#: apps/employee/forms.py:158 apps/employee/templates/employee/signup.html:20
+msgid "User name"
+msgstr "Nombre de usuario"
+
+#: apps/employee/forms.py:162
+#: apps/employee/templates/employee/employee_list.html:18
+#: apps/employee/templates/employee/signup.html:75
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: apps/employee/forms.py:166 apps/employee/templates/employee/signup.html:94
+msgid "First name"
+msgstr "Nombre"
+
+#: apps/employee/forms.py:170 apps/employee/templates/employee/signup.html:110
+msgid "Last name"
+msgstr "Apellido"
+
+#: apps/employee/forms.py:184
+msgid "Image"
+msgstr ""
+
+#: apps/employee/forms.py:187
+msgid "Bio"
+msgstr ""
+
+#: apps/employee/forms.py:205
+msgid "Profile"
+msgstr "Perfil"
+
+#: apps/employee/forms.py:206
+#: apps/employee/templates/employee/emotion_analysis/index.html:18
+msgid "Video file"
+msgstr "Archivo de vídeo"
+
+#: apps/employee/forms.py:207
+msgid "Recording date and time"
+msgstr ""
+
+#: apps/employee/forms.py:215
+msgid "Select date and time"
+msgstr "Selecciona fecha y hora"
+
+#: apps/employee/models.py:15 apps/employee/models.py:37
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:16
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:16
+msgid "Name"
+msgstr "Nombre"
+
+#: apps/employee/models.py:15
+msgid "Name of the worker area"
+msgstr "Nombre del área de trabajadores"
+
+#: apps/employee/models.py:16
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:17
+msgid "Description"
+msgstr "Descripción"
+
+#: apps/employee/models.py:16
+msgid "Description of the worker area"
+msgstr "Descripción del área del trabajador"
+
+#: apps/employee/models.py:32
+msgid "Morning"
+msgstr "Mañana"
+
+#: apps/employee/models.py:33
+msgid "Afternoon"
+msgstr "Tarde"
+
+#: apps/employee/models.py:34
+msgid "Night"
+msgstr "Noche"
+
+#: apps/employee/models.py:37
+msgid "Name of the work shift"
+msgstr "Nombre del turno de trabajo"
+
+#: apps/employee/models.py:38
+msgid "Start time"
+msgstr "Hora de inicio"
+
+#: apps/employee/models.py:38
+msgid "Start time of the shift"
+msgstr "Hora de inicio del turno"
+
+#: apps/employee/models.py:39
+msgid "End time"
+msgstr "Hora de finalización"
+
+#: apps/employee/models.py:39
+msgid "End time of the shift"
+msgstr "Hora de finalización del turno"
+
+#: apps/employee/models.py:40
+msgid "Shift type"
+msgstr "Tipo de turno"
+
+#: apps/employee/models.py:40
+msgid "Type of shift (morning, afternoon, night)"
+msgstr "Tipo de turno (mañana, tarde, noche)"
+
+#: apps/employee/models.py:74
+msgid "Assigned work shift"
+msgstr "Turno de trabajo asignado"
+
+#: apps/employee/models.py:77
+msgid "Assigned worker area"
+msgstr "Área de trabajador asignada"
+
+#: apps/employee/models.py:136
+msgid "The profile of the employee being analyzed"
+msgstr "El perfil del empleado analizado"
+
+#: apps/employee/models.py:139
+msgid "Video file of the employee during their shift"
+msgstr "Archivo de vídeo del empleado durante su turno"
+
+#: apps/employee/models.py:140
+msgid "Date and time when the video was recorded"
+msgstr "Fecha y hora de grabación del vídeo"
+
+#: apps/employee/models.py:141
+msgid "Date and time when the video was analyzed"
+msgstr ""
+
+#: apps/employee/models.py:142
+msgid "JSON field to store detected emotions and their probabilities"
+msgstr ""
+
+#: apps/employee/templates/employee/analytics/analytics_list - V1.html:7
+#: V1.html:13 v2.html:4 v2.html:10 v3.html:4 v3.html:18
+#: apps/employee/templates/employee/analytics/analytics_list.html:4
+#: apps/employee/templates/employee/analytics/analytics_list.html:24
+#: apps/employee/templates/employee/analytics/index.html:4
+#: apps/employee/templates/employee/analytics/index.html:10
+#: templates/includes/sidebar.html:12
+msgid "Emotional Analytic"
+msgstr "Analítica emocional"
+
+#: apps/employee/templates/employee/analytics/analytics_list - V1.html:19
+#: v2.html:46 v3.html:302
+#: apps/employee/templates/employee/analytics/analytics_list.html:248
+#: apps/employee/templates/employee/emotion_analysis/index.html:16
+msgid "Employee"
+msgstr "Empleado"
+
+#: apps/employee/templates/employee/analytics/analytics_list - V1.html:20
+#: v2.html:28 v2.html:47 v3.html:31
+#: apps/employee/templates/employee/analytics/analytics_list.html:37
+#: apps/employee/templates/employee/emotion_analysis/index.html:17
+#: apps/employee/templates/employee/signup.html:164
+#: apps/employee/templates/employee/video/video_list.html:19
+msgid "Work shift"
+msgstr "Turno de trabajo"
+
+#: apps/employee/templates/employee/analytics/analytics_list - V1.html:21
+#: v2.html:48 apps/employee/templates/employee/signup.html:180
+msgid "Worker area"
+msgstr "Área de trabajo"
+
+#: apps/employee/templates/employee/analytics/analytics_list - V1.html:22
+#: v2.html:49
+msgid "Fecha / Hour"
+msgstr ""
+
+#: apps/employee/templates/employee/analytics/analytics_list - V1.html:23
+#: v2.html:50 apps/employee/templates/employee/emotion_analysis/index.html:21
+#: apps/employee/templates/employee/video/video_list.html:27
+msgid "Emotions detected"
+msgstr "Emociones detectadas"
+
+#: apps/employee/templates/employee/analytics/analytics_list - V1.html:24
+#: v2.html:51
+msgid "Dominant emotion"
+msgstr "Emoción dominante"
+
+#: apps/employee/templates/employee/analytics/analytics_list - V1.html:82
+#: apps/employee/templates/employee/analytics/partial_employees.html:59
+msgid "There are no processed emotions."
+msgstr ""
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:18
+#: v3.html:41 apps/employee/templates/employee/analytics/analytics_list.html:47
+#: templates/includes/sidebar.html:15
+msgid "Employees"
+msgstr "Empleados"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:23
+#: v3.html:26 apps/employee/templates/employee/analytics/analytics_list.html:32
+#: apps/employee/templates/employee/video/video_list.html:18
+msgid "Work area"
+msgstr "Área de trabajo"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:33
+msgid "Hours"
+msgstr "Horas"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:66
+#: v3.html:87 apps/employee/templates/employee/analytics/analytics_list.html:95
+msgid "Area name"
+msgstr "Nombre del área"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:67
+#: v2.html:88 v2.html:109 v3.html:89 v3.html:164 v3.html:225 v3.html:304
+#: apps/employee/templates/employee/analytics/analytics_list.html:97
+#: apps/employee/templates/employee/analytics/analytics_list.html:156
+#: apps/employee/templates/employee/analytics/analytics_list.html:199
+#: apps/employee/templates/employee/analytics/analytics_list.html:250
+msgid "sad"
+msgstr "triste"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:68
+#: v2.html:89 v2.html:110 v3.html:90 v3.html:165 v3.html:226 v3.html:305
+#: apps/employee/templates/employee/analytics/analytics_list.html:98
+#: apps/employee/templates/employee/analytics/analytics_list.html:157
+#: apps/employee/templates/employee/analytics/analytics_list.html:200
+#: apps/employee/templates/employee/analytics/analytics_list.html:251
+msgid "fear"
+msgstr "miedo"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:69
+#: v2.html:90 v2.html:111 v3.html:91 v3.html:166 v3.html:227 v3.html:306
+#: apps/employee/templates/employee/analytics/analytics_list.html:99
+#: apps/employee/templates/employee/analytics/analytics_list.html:158
+#: apps/employee/templates/employee/analytics/analytics_list.html:201
+#: apps/employee/templates/employee/analytics/analytics_list.html:252
+msgid "angry"
+msgstr "enojado"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:70
+#: v2.html:91 v2.html:112 v3.html:92 v3.html:167 v3.html:228 v3.html:307
+#: apps/employee/templates/employee/analytics/analytics_list.html:100
+#: apps/employee/templates/employee/analytics/analytics_list.html:159
+#: apps/employee/templates/employee/analytics/analytics_list.html:202
+#: apps/employee/templates/employee/analytics/analytics_list.html:253
+msgid "happy"
+msgstr "feliz"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:71
+#: v2.html:92 v2.html:113 v3.html:93 v3.html:168 v3.html:229 v3.html:308
+#: apps/employee/templates/employee/analytics/analytics_list.html:101
+#: apps/employee/templates/employee/analytics/analytics_list.html:160
+#: apps/employee/templates/employee/analytics/analytics_list.html:203
+#: apps/employee/templates/employee/analytics/analytics_list.html:254
+msgid "disgust"
+msgstr "disgusto"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:72
+#: v2.html:93 v2.html:114 v3.html:94 v3.html:169 v3.html:230 v3.html:309
+#: apps/employee/templates/employee/analytics/analytics_list.html:102
+#: apps/employee/templates/employee/analytics/analytics_list.html:161
+#: apps/employee/templates/employee/analytics/analytics_list.html:204
+#: apps/employee/templates/employee/analytics/analytics_list.html:255
+msgid "neutral"
+msgstr "neutral"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:73
+#: v2.html:94 v2.html:115 v3.html:95 v3.html:170 v3.html:231 v3.html:310
+#: apps/employee/templates/employee/analytics/analytics_list.html:103
+#: apps/employee/templates/employee/analytics/analytics_list.html:162
+#: apps/employee/templates/employee/analytics/analytics_list.html:205
+#: apps/employee/templates/employee/analytics/analytics_list.html:256
+msgid "surprise"
+msgstr "sorpresa"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:87
+#: v3.html:162
+#: apps/employee/templates/employee/analytics/analytics_list.html:154
+msgid "Work shift name"
+msgstr "Nombre del turno de trabajo"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v2.html:108
+msgid "Hour"
+msgstr "Hora"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v3.html:36
+#: v3.html:88 v3.html:163 v3.html:224 v3.html:303
+#: apps/employee/templates/employee/analytics/analytics_list.html:42
+#: apps/employee/templates/employee/analytics/analytics_list.html:96
+#: apps/employee/templates/employee/analytics/analytics_list.html:155
+#: apps/employee/templates/employee/analytics/analytics_list.html:198
+#: apps/employee/templates/employee/analytics/analytics_list.html:249
+msgid "Date and Hour"
+msgstr "Fecha y hora"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v3.html:55
+#: apps/employee/templates/employee/analytics/analytics_list.html:61
+msgid "Select worker area"
+msgstr "Seleccionar área de trabajador"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v3.html:67
+#: v3.html:143 v3.html:283
+#: apps/employee/templates/employee/analytics/analytics_list.html:75
+#: apps/employee/templates/employee/analytics/analytics_list.html:135
+#: apps/employee/templates/employee/analytics/analytics_list.html:229
+msgid "Select date range"
+msgstr "Seleccionar rango de fechas"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v3.html:79
+#: v3.html:155 v3.html:217 v3.html:295
+#: apps/employee/templates/employee/analytics/analytics_list.html:87
+#: apps/employee/templates/employee/analytics/analytics_list.html:147
+#: apps/employee/templates/employee/analytics/analytics_list.html:191
+#: apps/employee/templates/employee/analytics/analytics_list.html:241
+msgid "Filter"
+msgstr "Filtrar"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v3.html:117
+#: v3.html:192 v3.html:250
+#: apps/employee/templates/employee/analytics/analytics_list.html:108
+#: apps/employee/templates/employee/analytics/analytics_list.html:167
+#: apps/employee/templates/employee/analytics/analytics_list.html:210
+#: apps/employee/templates/employee/analytics/analytics_list.html:261
+#: apps/employee/templates/employee/analytics/analytics_list.html:793
+#: apps/employee/templates/employee/analytics/analytics_list.html:795
+#: apps/employee/templates/employee/analytics/analytics_list.html:837
+#: apps/employee/templates/employee/analytics/analytics_list.html:839
+#: apps/employee/templates/employee/analytics/analytics_list.html:877
+#: apps/employee/templates/employee/analytics/analytics_list.html:879
+#: apps/employee/templates/employee/analytics/analytics_list.html:921
+#: apps/employee/templates/employee/analytics/analytics_list.html:923
+#: apps/employee/templates/employee/analytics/partial_areas.html:16
+#: apps/employee/templates/employee/analytics/partial_hours.html:16
+#: apps/employee/templates/employee/analytics/partial_workshifts.html:16
+msgid "No data available."
+msgstr "No hay datos disponibles."
+
+#: apps/employee/templates/employee/analytics/analytics_list - v3.html:131
+#: apps/employee/templates/employee/analytics/analytics_list.html:121
+msgid "Select work shift"
+msgstr "Seleccionar turno de trabajo"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v3.html:205
+#: apps/employee/templates/employee/analytics/analytics_list.html:179
+msgid "Select date time range"
+msgstr "Selecciona rango de fecha hora"
+
+#: apps/employee/templates/employee/analytics/analytics_list - v3.html:263
+#: apps/employee/templates/employee/analytics/analytics_list.html:222
+msgid "Select employee"
+msgstr "Seleccionar empleado"
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:68
+msgid "All work areas"
+msgstr "Todas las áreas de trabajo"
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:128
+msgid "All work shifts"
+msgstr "Todos los turnos de trabajo"
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:293
+msgid "Select the employee here"
+msgstr "Seleccione el empleado aquí"
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:294
+msgid "Search..."
+msgstr "Buscar..."
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:295
+msgid "No results found"
+msgstr "No se encontraron resultados"
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:332
+msgid "Please select a work area."
+msgstr "Por favor seleccione un área de trabajo."
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:342
+#: apps/employee/templates/employee/analytics/analytics_list.html:456
+#: apps/employee/templates/employee/analytics/analytics_list.html:553
+#: apps/employee/templates/employee/analytics/analytics_list.html:671
+msgid "Please select a valid date range."
+msgstr "Por favor, selecciona un rango de fechas válido."
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:354
+#: apps/employee/templates/employee/analytics/analytics_list.html:468
+#: apps/employee/templates/employee/analytics/analytics_list.html:565
+#: apps/employee/templates/employee/analytics/analytics_list.html:683
+msgid "Please select valid dates."
+msgstr "Por favor, selecciona fechas válidas."
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:363
+#: apps/employee/templates/employee/analytics/analytics_list.html:477
+#: apps/employee/templates/employee/analytics/analytics_list.html:574
+#: apps/employee/templates/employee/analytics/analytics_list.html:692
+msgid "The start date cannot be later than the end date."
+msgstr "La fecha de inicio no puede ser posterior a la fecha de fin."
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:402
+#: apps/employee/templates/employee/analytics/analytics_list.html:516
+#: apps/employee/templates/employee/analytics/analytics_list.html:612
+#: apps/employee/templates/employee/analytics/analytics_list.html:731
+#: apps/employee/templates/employee/signup.html:239
+#: apps/employee/templates/employee/update_employee_form.html:107
+#: apps/employee/templates/employee/update_profile_form.html:118
+#: apps/employee/templates/employee/video/video_form.html:147
+#: apps/employee/templates/employee/work_shift/work_shift_form.html:63
+#: apps/employee/templates/employee/worker_area/worker_area_form.html:63
+#: apps/employee/views.py:816 apps/employee/views.py:876
+#: apps/employee/views.py:926 apps/employee/views.py:979
+#: templates/layouts/base.html:84 templates/layouts/base_employee.html:79
+msgid "Failure"
+msgstr "Falla"
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:446
+msgid "Please select a work shift."
+msgstr "Por favor seleccione un turno de trabajo."
+
+#: apps/employee/templates/employee/analytics/analytics_list.html:661
+msgid "Please select an employee."
+msgstr "Por favor seleccione un empleado."
+
+#: apps/employee/templates/employee/emotion_analysis/index.html:4
+#: apps/employee/templates/employee/emotion_analysis/index.html:10
+msgid "Emotions Videos"
+msgstr "Vídeos de emociones"
+
+#: apps/employee/templates/employee/emotion_analysis/index.html:19
+msgid "Recorded at"
+msgstr "Grabado a"
+
+#: apps/employee/templates/employee/emotion_analysis/index.html:20
+msgid "Analyzed at"
+msgstr "Analizado a"
+
+#: apps/employee/templates/employee/emotion_analysis/index.html:22
+#: apps/employee/templates/employee/employee_list.html:20
+#: apps/employee/templates/employee/video/video_list.html:28
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:20
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:18
+msgid "Actions"
+msgstr "Acciones"
+
+#: apps/employee/templates/employee/emotion_analysis/index.html:40
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:67
+msgid "New work shift"
+msgstr "Turno de trabajo asignado"
+
+#: apps/employee/templates/employee/employee_list.html:4
+#: apps/employee/templates/employee/employee_list.html:10
+msgid "Employee list"
+msgstr "Lista de empleados"
+
+#: apps/employee/templates/employee/employee_list.html:16
+msgid "Last Name"
+msgstr "Apellido"
+
+#: apps/employee/templates/employee/employee_list.html:17
+msgid "First Name"
+msgstr "Nombre"
+
+#: apps/employee/templates/employee/employee_list.html:19
+msgid "On Line"
+msgstr "En línea"
+
+#: apps/employee/templates/employee/employee_list.html:37
+#: apps/employee/templates/employee/video/video_list.html:59
+#: apps/employee/templates/employee/work_shift/work_shift_form.html:15
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:37
+#: apps/employee/templates/employee/worker_area/worker_area_form.html:15
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:33
+msgid "Edit"
+msgstr "Editar"
+
+#: apps/employee/templates/employee/employee_list.html:46
+#: apps/employee/templates/employee/video/video_list.html:68
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:46
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:42
+msgid "Delete"
+msgstr "Eliminar"
+
+#: apps/employee/templates/employee/employee_list.html:67
+msgid "New employee"
+msgstr "Nuevo empleado"
+
+#: apps/employee/templates/employee/employee_list.html:90
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:90
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:86
+msgid "Export to Excel"
+msgstr "Exportar a Excel"
+
+#: apps/employee/templates/employee/employee_list.html:100
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:100
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:96
+msgid "Export to PDF"
+msgstr "Exportar a PDF"
+
+#: apps/employee/templates/employee/profile.html:205
+msgid "Yes,No"
+msgstr ""
+
+#: apps/employee/templates/employee/signup.html:11
+msgid "Create employee"
+msgstr "Crear empleado"
+
+#: apps/employee/templates/employee/signup.html:38 apps/home/forms.py:16
+#: templates/accounts/login.html:88
+msgid "Password"
+msgstr "Contraseña"
+
+#: apps/employee/templates/employee/signup.html:56
+msgid "Password (confirmation)"
+msgstr ""
+
+#: apps/employee/templates/employee/signup.html:129
+msgid "Identity Document"
+msgstr "Documento de Identidad"
+
+#: apps/employee/templates/employee/signup.html:145
+msgid "Birth Date"
+msgstr "Fecha de nacimiento"
+
+#: apps/employee/templates/employee/signup.html:197
+#: apps/employee/templates/employee/update_employee_form.html:45
+#: apps/employee/templates/employee/update_profile_form.html:53
+#: apps/employee/templates/employee/video/video_form.html:32
+#: apps/employee/templates/employee/work_shift/work_shift_form.html:24
+#: apps/employee/templates/employee/worker_area/worker_area_form.html:24
+msgid "Required fields"
+msgstr "Campos obligatorios"
+
+#: apps/employee/templates/employee/signup.html:202
+#: apps/employee/templates/employee/update_employee_form.html:51
+#: apps/employee/templates/employee/update_profile_form.html:59
+#: apps/employee/templates/employee/video/video_form.html:36
+#: apps/employee/templates/employee/work_shift/work_shift_form.html:28
+#: apps/employee/templates/employee/worker_area/worker_area_form.html:28
+msgid "Save"
+msgstr "Guardar"
+
+#: apps/employee/templates/employee/signup.html:204
+#: apps/employee/templates/employee/update_employee_form.html:50
+#: apps/employee/templates/employee/update_profile_form.html:58
+#: apps/employee/templates/employee/video/video_form.html:37
+#: apps/employee/templates/employee/video/video_list.html:97
+#: apps/employee/templates/employee/work_shift/work_shift_form.html:29
+#: apps/employee/templates/employee/worker_area/worker_area_form.html:29
+msgid "Close"
+msgstr "Cerrar"
+
+#: apps/employee/templates/employee/update_employee_form.html:11
+msgid "Edit employee"
+msgstr "Actualizar empleado"
+
+#: apps/employee/templates/employee/update_employee_form.html:16
+#: apps/employee/templates/employee/update_profile_form.html:16
+msgid "Complete the following form and click the <i>Save</i> button."
+msgstr ""
+
+#: apps/employee/templates/employee/update_profile_form.html:11
+msgid "Edit profile"
+msgstr "Editar perfil"
+
+#: apps/employee/templates/employee/update_profile_form.html:46
+msgid "Change password"
+msgstr "Cambiar la contraseña"
+
+#: apps/employee/templates/employee/video/video_form.html:15
+msgid "Upload video"
+msgstr "Subir vídeo"
+
+#: apps/employee/templates/employee/video/video_form.html:15
+msgid "Change video"
+msgstr ""
+
+#: apps/employee/templates/employee/video/video_form.html:27
+msgid "Uploaded video file"
+msgstr "Archivo de vídeo subido"
+
+#: apps/employee/templates/employee/video/video_list.html:5
+#: apps/employee/templates/employee/video/video_list.html:11
+#: templates/includes/nav.html:41 templates/includes/sidebar.html:9
+msgid "Uploaded videos"
+msgstr "Vídeos subidos"
+
+#: apps/employee/templates/employee/video/video_list.html:17
+msgid "Employee name"
+msgstr "Nombre del empleado"
+
+#: apps/employee/templates/employee/video/video_list.html:20
+msgid "File name"
+msgstr "Nombre del archivo"
+
+#: apps/employee/templates/employee/video/video_list.html:22
+msgid "File type"
+msgstr "Tipo de archivo"
+
+#: apps/employee/templates/employee/video/video_list.html:23
+msgid "File size"
+msgstr "Tamaño del archivo"
+
+#: apps/employee/templates/employee/video/video_list.html:25
+msgid "Capture time"
+msgstr "Hora de captura"
+
+#: apps/employee/templates/employee/video/video_list.html:26
+msgid "Analysis time"
+msgstr "Hora de análisis"
+
+#: apps/employee/templates/employee/video/video_list.html:87
+msgid "Video Playback"
+msgstr "Reproducción de vídeo"
+
+#: apps/employee/templates/employee/video/video_list.html:93
+msgid "Your browser does not support the video tag."
+msgstr ""
+
+#: apps/employee/templates/employee/video/video_list.html:108
+#, fuzzy
+#| msgid "Analysis time"
+msgid "Analyzing video"
+msgstr "Hora de análisis"
+
+#: apps/employee/templates/employee/video/video_list.html:114
+#, fuzzy
+#| msgid "Start Time"
+msgid "Starting"
+msgstr "Hora de inicio"
+
+#: apps/employee/templates/employee/video/video_list.html:127
+msgid "New video"
+msgstr ""
+
+#: apps/employee/templates/employee/work_shift/work_shift_form.html:15
+#: apps/employee/templates/employee/worker_area/worker_area_form.html:15
+msgid "Create"
+msgstr "Crear"
+
+#: apps/employee/templates/employee/work_shift/work_shift_form.html:15
+msgid "work shift"
+msgstr "turno de trabajo"
+
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:4
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:10
+msgid "Work shift list"
+msgstr "Lista de turnos de trabajo"
+
+#: apps/employee/templates/employee/work_shift/work_shift_list.html:19
+msgid "Shift Type"
+msgstr "Tipo de turno"
+
+#: apps/employee/templates/employee/worker_area/worker_area_form.html:15
+msgid "worker area"
+msgstr "área de trabajo"
+
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:4
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:10
+msgid "Work area list"
+msgstr "Lista de áreas de trabajo"
+
+#: apps/employee/templates/employee/worker_area/worker_area_list.html:63
+msgid "New worker area"
+msgstr "Nueva área de trabajadores"
+
+#: apps/employee/views.py:153
+msgid "The employee was successfully updated!"
+msgstr ""
+
+#: apps/employee/views.py:182
+msgid "Your profile is successfully updated!"
+msgstr ""
+
+#: apps/employee/views.py:206 apps/employee/views.py:282
+#: apps/employee/views.py:358 apps/employee/views.py:657
+msgid "Record deleted successfully."
+msgstr ""
+
+#: apps/employee/views.py:240
+msgid "Success: The new workspace was created successfully."
+msgstr ""
+
+#: apps/employee/views.py:249
+msgid "Success: Work area successfully modified."
+msgstr ""
+
+#: apps/employee/views.py:316
+msgid "Success: The new work shift was created successfully."
+msgstr ""
+
+#: apps/employee/views.py:325
+msgid "Success: The work shift was successfully modified."
+msgstr ""
+
+#: apps/employee/views.py:462
+msgid "Success: The new video was created successfully."
+msgstr ""
+
+#: apps/employee/views.py:470 apps/employee/views.py:477
+msgid "Successfully submitted data"
+msgstr ""
+
+#: apps/employee/views.py:624
+msgid "Success: The video was successfully modified."
+msgstr ""
+
+#: apps/employee/views.py:817 apps/employee/views.py:877
+#: apps/employee/views.py:927 apps/employee/views.py:980
+msgid "Incorrect request"
+msgstr ""
+
+#: apps/home/forms.py:21
+msgid "Confirm Password"
+msgstr "Confirmar Contraseña"
+
+#: apps/home/forms.py:43
+msgid "Your Username"
+msgstr "Tu nombre de usuario"
+
+#: apps/home/forms.py:47
+msgid "Your Password"
+msgstr "Tu contraseña"
+
+#: apps/home/templates/home/index.html:4 templates/includes/nav.html:35
+#: templates/includes/sidebar.html:6
+msgid "Dashboard"
+msgstr ""
+
+#: apps/home/templates/home/index.html:11
+msgid "Emotions"
+msgstr "Emociones"
+
+#: apps/home/templates/home/index.html:25
+msgid "Average scores for each emotion per work shift"
+msgstr "Puntajes promedio para cada emoción por turno de trabajo"
+
+#: templates/accounts/logged_out.html:4
+msgid "See you!"
+msgstr "¡Nos vemos!"
+
+#: templates/accounts/logged_out.html:14
+msgid "Logged out"
+msgstr "Cerrado sesión"
+
+#: templates/accounts/logged_out.html:15
+msgid "You have been successfully logged out."
+msgstr ""
+
+#: templates/accounts/logged_out.html:17
+msgid "Thank you for using our product. We're glad you're with us."
+msgstr ""
+
+#: templates/accounts/logged_out.html:24
+msgid "Log in again"
+msgstr "Inicia sesión nuevamente"
+
+#: templates/accounts/login.html:4 templates/accounts/login.html:107
+msgid "Login"
+msgstr "Iniciar sesión"
+
+#: templates/accounts/login.html:40
+msgid "Welcome back! We're so excited to see you again!"
+msgstr "¡Bienvenido de nuevo! ¡Estamos muy emocionados de verte de nuevo!"
+
+#: templates/accounts/login.html:43
+msgid "Sign in with"
+msgstr "Iniciar sesión con"
+
+#: templates/accounts/login.html:58
+msgid "Or"
+msgstr "O"
+
+#: templates/accounts/login.html:63
+msgid "Your username and password do not match. Please try again."
+msgstr ""
+
+#: templates/accounts/login.html:70
+msgid ""
+"Your account does not have access to this page. To proceed, please log in "
+"with an account that has the necessary permissions."
+msgstr ""
+
+#: templates/accounts/login.html:72
+msgid "Please log in to view this page."
+msgstr "Por favor inicie sesión para ver esta página."
+
+#: templates/accounts/login.html:80
+msgid "Enter a valid email address"
+msgstr "Introduzca una dirección de correo electrónico válida"
+
+#: templates/accounts/login.html:81
+msgid "Email address"
+msgstr "Dirección de correo electrónico"
+
+#: templates/accounts/login.html:87
+msgid "Enter password"
+msgstr "Introduce la contraseña"
+
+#: templates/accounts/login.html:96
+msgid "Remember me"
+msgstr "Recordarme"
+
+#: templates/accounts/login.html:99
+msgid "Forgot password?"
+msgstr "¿Has olvidado tu contraseña?"
+
+#: templates/accounts/login.html:110
+msgid "Don't have an account?"
+msgstr "¿No tienes una cuenta?"
+
+#: templates/accounts/login.html:111
+msgid "Register"
+msgstr "Registrarse"
+
+#: templates/accounts/login.html:124
+msgid "Be part of our customers and enjoy the best dishes."
+msgstr ""
+
+#: templates/accounts/login.html:126
+msgid "Place your order from your device and monitor its progress online."
+msgstr ""
+
+#: templates/includes/head.html:4 templates/layouts/base-login.html:6
+#: templates/layouts/base.html:6 templates/layouts/base_employee.html:6
+msgid "WellTrack IA"
+msgstr ""
+
+#: templates/includes/modals.html:8 templates/includes/modals.html:20
+#: templates/includes/nav first.html:109 templates/includes/nav.html:138
+msgid "Logout"
+msgstr "Cerrar sesión"
+
+#: templates/includes/modals.html:13
+msgid "Are you sure you want to logout?"
+msgstr "¿Estás seguro de que quieres cerrar sesión?"
+
+#: templates/includes/modals.html:18
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: templates/includes/nav first.html:21 templates/includes/nav.html:24
+msgid "Search"
+msgstr "Buscar"
+
+#: templates/includes/sidebar.html:17
+msgid "Worker Area"
+msgstr "Área de trabajo"
+
+#: templates/includes/sidebar.html:19
+msgid "Work Shift"
+msgstr "Turno de trabajo"
+
+#: templates/layouts/base.html:45 templates/layouts/base_employee.html:40
+msgid "Confirm deletion"
+msgstr "Confirmar eliminación"
+
+#: templates/layouts/base.html:46 templates/layouts/base_employee.html:41
+msgid "Are you sure you want to delete this record?"
+msgstr "¿Está seguro de que desea eliminar este registro?"
+
+#: templates/layouts/base.html:47 templates/layouts/base_employee.html:42
+msgid "Yes"
+msgstr ""
+
+#: templates/layouts/base.html:48 templates/layouts/base_employee.html:43
+msgid "No"
+msgstr ""
+
+#: welltrack_ia/settings.py:137
+msgid "English"
+msgstr ""
+
+#: welltrack_ia/settings.py:138
+msgid "Spanish"
+msgstr ""
+
+#~ msgid "Select Area"
+#~ msgstr "Seleccionar área"
+
+#~ msgid "Analytics"
+#~ msgstr "Analítica"
+
+#~ msgid "Video analytics"
+#~ msgstr "Análisis de vídeos"
+
+#, fuzzy
+#~| msgid "File size"
+#~ msgid "File file"
+#~ msgstr "Tamaño del archivo"
+
+#~ msgid "Shift"
+#~ msgstr "Turno"
+
+#~ msgid "Emotion analysis"
+#~ msgstr "Análisis de emociones"
+
+#, fuzzy
+#~| msgid "Employees"
+#~ msgid "Employee List"
+#~ msgstr "Empleados"

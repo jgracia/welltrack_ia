@@ -1,0 +1,29 @@
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form id="logout-form" action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="logoutModalLabel">{{ _("Logout") }}</h5>
+          <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="lead">
+            {{ _("Are you sure you want to logout?") }}
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+            {{ _("Cancel") }}
+          </button>
+          <button type="submit" class="btn btn-primary" onclick="window.location.href='{% url 'logout' %}'">{{ _("Logout") }}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{# Renderiza Formulario Modal #}
+<div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="popupModalLabel"></div>
