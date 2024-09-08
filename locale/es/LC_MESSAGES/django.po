@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-06 16:46-0500\n"
-"PO-Revision-Date: 2024-09-06 17:35-0500\n"
+"POT-Creation-Date: 2024-09-07 22:02-0500\n"
+"PO-Revision-Date: 2024-09-07 22:04-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -18,6 +18,62 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
 "1 : 2;\n"
 "X-Generator: Poedit 2.4.3\n"
+
+#: apps/api/views.py:114
+msgid "January"
+msgstr ""
+
+#: apps/api/views.py:115
+msgid "February"
+msgstr ""
+
+#: apps/api/views.py:116
+#, fuzzy
+#| msgid "Search"
+msgid "March"
+msgstr "Buscar"
+
+#: apps/api/views.py:117
+msgid "April"
+msgstr ""
+
+#: apps/api/views.py:118
+msgid "May"
+msgstr ""
+
+#: apps/api/views.py:119
+msgid "June"
+msgstr ""
+
+#: apps/api/views.py:120
+msgid "July"
+msgstr ""
+
+#: apps/api/views.py:121
+#, fuzzy
+#| msgid "disgust"
+msgid "August"
+msgstr "disgusto"
+
+#: apps/api/views.py:122
+#, fuzzy
+#| msgid "Remember me"
+msgid "September"
+msgstr "Recordarme"
+
+#: apps/api/views.py:123
+msgid "October"
+msgstr ""
+
+#: apps/api/views.py:124
+msgid "November"
+msgstr ""
+
+#: apps/api/views.py:125
+#, fuzzy
+#| msgid "Remember me"
+msgid "December"
+msgstr "Recordarme"
 
 #: apps/employee/forms.py:56
 #: apps/employee/templates/employee/work_shift/work_shift_list.html:17
@@ -208,6 +264,7 @@ msgstr "Emoción dominante"
 
 #: apps/employee/templates/employee/analytics/analytics_list - V1.html:82
 #: apps/employee/templates/employee/analytics/partial_employees.html:59
+#: apps/home/templates/home/index.html:57
 msgid "There are no processed emotions."
 msgstr ""
 
@@ -238,6 +295,7 @@ msgstr "Nombre del área"
 #: apps/employee/templates/employee/analytics/analytics_list.html:156
 #: apps/employee/templates/employee/analytics/analytics_list.html:199
 #: apps/employee/templates/employee/analytics/analytics_list.html:250
+#: apps/home/templates/home/index.html:34
 msgid "sad"
 msgstr "triste"
 
@@ -247,6 +305,7 @@ msgstr "triste"
 #: apps/employee/templates/employee/analytics/analytics_list.html:157
 #: apps/employee/templates/employee/analytics/analytics_list.html:200
 #: apps/employee/templates/employee/analytics/analytics_list.html:251
+#: apps/home/templates/home/index.html:35
 msgid "fear"
 msgstr "miedo"
 
@@ -256,6 +315,7 @@ msgstr "miedo"
 #: apps/employee/templates/employee/analytics/analytics_list.html:158
 #: apps/employee/templates/employee/analytics/analytics_list.html:201
 #: apps/employee/templates/employee/analytics/analytics_list.html:252
+#: apps/home/templates/home/index.html:36
 msgid "angry"
 msgstr "enojado"
 
@@ -265,6 +325,7 @@ msgstr "enojado"
 #: apps/employee/templates/employee/analytics/analytics_list.html:159
 #: apps/employee/templates/employee/analytics/analytics_list.html:202
 #: apps/employee/templates/employee/analytics/analytics_list.html:253
+#: apps/home/templates/home/index.html:37
 msgid "happy"
 msgstr "feliz"
 
@@ -274,6 +335,7 @@ msgstr "feliz"
 #: apps/employee/templates/employee/analytics/analytics_list.html:160
 #: apps/employee/templates/employee/analytics/analytics_list.html:203
 #: apps/employee/templates/employee/analytics/analytics_list.html:254
+#: apps/home/templates/home/index.html:38
 msgid "disgust"
 msgstr "disgusto"
 
@@ -283,6 +345,7 @@ msgstr "disgusto"
 #: apps/employee/templates/employee/analytics/analytics_list.html:161
 #: apps/employee/templates/employee/analytics/analytics_list.html:204
 #: apps/employee/templates/employee/analytics/analytics_list.html:255
+#: apps/home/templates/home/index.html:39
 msgid "neutral"
 msgstr "neutral"
 
@@ -292,6 +355,7 @@ msgstr "neutral"
 #: apps/employee/templates/employee/analytics/analytics_list.html:162
 #: apps/employee/templates/employee/analytics/analytics_list.html:205
 #: apps/employee/templates/employee/analytics/analytics_list.html:256
+#: apps/home/templates/home/index.html:40
 msgid "surprise"
 msgstr "sorpresa"
 
@@ -747,12 +811,45 @@ msgid "Dashboard"
 msgstr ""
 
 #: apps/home/templates/home/index.html:11
-msgid "Emotions"
-msgstr "Emociones"
+msgid "Emotions of the current year, until the current month"
+msgstr "Emociones del año en curso, hasta el mes en curso"
 
 #: apps/home/templates/home/index.html:25
-msgid "Average scores for each emotion per work shift"
-msgstr "Puntajes promedio para cada emoción por turno de trabajo"
+msgid "Total emotions per work shift during the current year"
+msgstr "Emociones totales por turno de trabajo durante el año en curso"
+
+#: apps/home/templates/home/index.html:80
+msgid "Active employees"
+msgstr "Empleados activos"
+
+#: apps/home/templates/home/index.html:95
+msgid "Inactive employees"
+msgstr "Empleados inactivos"
+
+#: apps/home/templates/home/index.html:110
+msgid "Videos analyzed"
+msgstr "Vídeos analizados"
+
+#: apps/home/templates/home/index.html:125
+msgid "Dominant"
+msgstr "Dominante"
+
+#: apps/home/templates/home/index.html:341
+msgid "POSITIVE"
+msgstr "POSITIVO"
+
+#: apps/home/templates/home/index.html:342
+#: apps/home/templates/home/index.html:362
+msgid "Monthly average"
+msgstr "Promedio mensual"
+
+#: apps/home/templates/home/index.html:361
+msgid "NEGATIVE"
+msgstr "NEGATIVO"
+
+#: apps/home/views.py:94
+msgid "None"
+msgstr ""
 
 #: templates/accounts/logged_out.html:4
 msgid "See you!"
@@ -846,7 +943,7 @@ msgid "WellTrack IA"
 msgstr ""
 
 #: templates/includes/modals.html:8 templates/includes/modals.html:20
-#: templates/includes/nav first.html:109 templates/includes/nav.html:138
+#: templates/includes/nav first.html:109 templates/includes/nav.html:146
 msgid "Logout"
 msgstr "Cerrar sesión"
 
@@ -861,6 +958,10 @@ msgstr "Cancelar"
 #: templates/includes/nav first.html:21 templates/includes/nav.html:24
 msgid "Search"
 msgstr "Buscar"
+
+#: templates/includes/nav.html:142
+msgid "My profile"
+msgstr "Mi perfil"
 
 #: templates/includes/sidebar.html:17
 msgid "Worker Area"
@@ -894,14 +995,30 @@ msgstr ""
 msgid "Spanish"
 msgstr ""
 
+#~ msgid "Average monthly amount"
+#~ msgstr "Promedio mensual"
+
+#, fuzzy
+#~| msgid "Select employee"
+#~ msgid "Healthy employees"
+#~ msgstr "Seleccionar empleado"
+
+#, fuzzy
+#~| msgid "Employee list"
+#~ msgid "Employees with problems"
+#~ msgstr "Lista de empleados"
+
+#~ msgid "Average scores for each emotion per work shift"
+#~ msgstr "Puntajes promedio para cada emoción por turno de trabajo"
+
+#~ msgid "Emotions"
+#~ msgstr "Emociones"
+
 #~ msgid "Select Area"
 #~ msgstr "Seleccionar área"
 
 #~ msgid "Analytics"
 #~ msgstr "Analítica"
-
-#~ msgid "Video analytics"
-#~ msgstr "Análisis de vídeos"
 
 #, fuzzy
 #~| msgid "File size"

@@ -85,3 +85,32 @@ TERMINAL 2
 
 # APAGAR WSL2
 wsl --shutdown
+
+
+# GIT
+git --version
+
+# inicializar repositorio
+git init
+
+# agrega archivos al repositorio
+git add .
+
+# excluir directorio de ambiente virtual
+echo ".venv/" >> .gitignore
+echo "media/uploads/" >> .gitignore
+
+# primer commit
+git commit -m "Initial commit"
+
+# renombrar la rama localmente
+git branch -m master main
+
+# configurar repositorio remoto
+git remote add origin https://github.com/jgracia/welltrack_ia.git
+
+# hacer cambios a la rama main en el repositorio remoto
+git push -u origin main
+
+# verificar cambios en remoto
+git remote -v

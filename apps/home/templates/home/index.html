@@ -8,7 +8,7 @@
 <section class="mb-4">
   <div class="card">
     <div class="card-header py-3">
-      <h5 class="mb-0 text-center"><strong>{{ _("Emotions") }}</strong></h5>
+      <h5 class="mb-0 text-center"><strong>{{ _("Emotions of the current year, until the current month") }}</strong></h5>
     </div>
     <div class="card-body">
       <canvas class="my-4 w-100" id="emotionChart" height="380"></canvas>
@@ -22,7 +22,7 @@
   <div class="card">
     <div class="card-header text-center py-3">
       <h5 class="mb-0 text-center">
-        <strong>{{ _("Average scores for each emotion per work shift") }}</strong>
+        <strong>{{ _("Total emotions per work shift during the current year") }}</strong>
       </h5>
     </div>
     <div class="card-body">
@@ -31,78 +31,32 @@
           <thead>
             <tr>
               <th scope="col"></th>
-              <th scope="col">Entusiasmo</th>
-              <th scope="col">Felicidad</th>
-              <th scope="col">Relajación</th>
-              <th scope="col">Ansiedad</th>
-              <th scope="col">Aburrimiento</th>
+              <th scope="col" class="text-end">😢 {{ _('sad') }}</th>
+              <th scope="col" class="text-end">😨 {{ _('fear') }}</th>
+              <th scope="col" class="text-end">😠 {{ _('angry') }}</th>
+              <th scope="col" class="text-end">😊 {{ _('happy') }}</th>
+              <th scope="col" class="text-end">🤢 {{ _('disgust') }}</th>
+              <th scope="col" class="text-end">😐 {{ _('neutral') }}</th>
+              <th scope="col" class="text-end">😲 {{ _('surprise') }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">Turno Matutino</th>
-              <td>18,492</td>
-              <td>228</td>
-              <td>350</td>
-              <td>$4,787.64</td>
-              <td>$13.68</td>
-            </tr>
-            <tr>
-              <th scope="row">Turno Tarde</th>
-              <td>
-                <span class="text-danger">
-                  <i class="fas fa-caret-down me-1"></i><span>-48.8%%</span>
-                </span>
-              </td>
-              <td>
-                <span class="text-success">
-                  <i class="fas fa-caret-up me-1"></i><span>14.0%</span>
-                </span>
-              </td>
-              <td>
-                <span class="text-success">
-                  <i class="fas fa-caret-up me-1"></i><span>46.4%</span>
-                </span>
-              </td>
-              <td>
-                <span class="text-success">
-                  <i class="fas fa-caret-up me-1"></i><span>29.6%</span>
-                </span>
-              </td>
-              <td>
-                <span class="text-danger">
-                  <i class="fas fa-caret-down me-1"></i><span>-11.5%</span>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Turno Noche</th>
-              <td>
-                <span class="text-danger">
-                  <i class="fas fa-caret-down me-1"></i><span>-17,654</span>
-                </span>
-              </td>
-              <td>
-                <span class="text-success">
-                  <i class="fas fa-caret-up me-1"></i><span>28</span>
-                </span>
-              </td>
-              <td>
-                <span class="text-success">
-                  <i class="fas fa-caret-up me-1"></i><span>111</span>
-                </span>
-              </td>
-              <td>
-                <span class="text-success">
-                  <i class="fas fa-caret-up me-1"></i><span>$1,092.72</span>
-                </span>
-              </td>
-              <td>
-                <span class="text-danger">
-                  <i class="fas fa-caret-down me-1"></i><span>$-1.78</span>
-                </span>
-              </td>
-            </tr>
+            {% for shift, emotions in work_shift_emotions.items %}
+              <tr>
+                <th scope="row">{{ shift }}</th>
+                <td class="text-end">{{ emotions.sad|default:0 }}</td>
+                <td class="text-end">{{ emotions.fear|default:0 }}</td>
+                <td class="text-end">{{ emotions.angry|default:0 }}</td>
+                <td class="text-end">{{ emotions.happy|default:0 }}</td>
+                <td class="text-end">{{ emotions.disgust|default:0 }}</td>
+                <td class="text-end">{{ emotions.neutral|default:0 }}</td>
+                <td class="text-end">{{ emotions.surprise|default:0 }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="8" class="text-center bg-info">{{ _("There are no processed emotions.") }}</td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -119,11 +73,11 @@
         <div class="card-body">
           <div class="d-flex justify-content-between px-md-1">
             <div class="align-self-center">
-              <i class="fas fa-pencil-alt text-info fa-3x"></i>
+              <i class="far fa-user text-info fa-3x"></i>
             </div>
             <div class="text-end">
-              <h3>278</h3>
-              <p class="mb-0">New Posts</p>
+              <h3>{{ total_employees }}</h3>
+              <p class="mb-0">{{ _('Active employees') }}</p>
             </div>
           </div>
         </div>
@@ -134,11 +88,11 @@
         <div class="card-body">
           <div class="d-flex justify-content-between px-md-1">
             <div class="align-self-center">
-              <i class="far fa-comment-alt text-warning fa-3x"></i>
+              <i class="far fa-user text-secondary fa-3x"></i>
             </div>
             <div class="text-end">
-              <h3>156</h3>
-              <p class="mb-0">New Comments</p>
+              <h3>{{ total_empleados_inactivos }}</h3>
+              <p class="mb-0">{{ _('Inactive employees') }}</p>
             </div>
           </div>
         </div>
@@ -152,8 +106,8 @@
               <i class="fas fa-chart-line text-success fa-3x"></i>
             </div>
             <div class="text-end">
-              <h3>64.89 %</h3>
-              <p class="mb-0">Bounce Rate</p>
+              <h3>{{ total_videos_analyzed }}</h3>
+              <p class="mb-0">{{ _('Videos analyzed') }}</p>
             </div>
           </div>
         </div>
@@ -164,17 +118,18 @@
         <div class="card-body">
           <div class="d-flex justify-content-between px-md-1">
             <div class="align-self-center">
-              <i class="fas fa-map-marker-alt text-danger fa-3x"></i>
+              <i class="fas fa-chart-pie text-danger fa-3x"></i>
             </div>
             <div class="text-end">
-              <h3>423</h3>
-              <p class="mb-0">Total Visits</p>
+              <h3>{{ dominant_emotion_percentage }} %</h3>
+              <p class="mb-0">{{ _('Dominant') }} : {{ dominant_emotion_name }}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <!--
   <div class="row">
     <div class="col-xl-3 col-sm-6 col-12 mb-4">
       <div class="card">
@@ -323,11 +278,13 @@
       </div>
     </div>
   </div>
+  -->
 </section>
 <!--Section: Minimal statistics cards-->
 
 <!--Section: Statistics with subtitles-->
 <section>
+  <!--
   <div class="row">
     <div class="col-xl-6 col-md-12 mb-4">
       <div class="card">
@@ -370,6 +327,7 @@
       </div>
     </div>
   </div>
+  -->
   <div class="row">
     <div class="col-xl-6 col-md-12 mb-4">
       <div class="card">
@@ -377,15 +335,15 @@
           <div class="d-flex justify-content-between p-md-1">
             <div class="d-flex flex-row">
               <div class="align-self-center">
-                <h2 class="h1 mb-0 me-4">$76,456.00</h2>
+                <h2 class="h1 mb-0 me-4">{{ average_positive_emotion }} %</h2>
               </div>
               <div>
-                <h4>Total Sales</h4>
-                <p class="mb-0">Monthly Sales Amount</p>
+                <h4>{{ _('POSITIVE') }}</h4>
+                <p class="mb-0">{{ _('Monthly average') }}</p>
               </div>
             </div>
             <div class="align-self-center">
-              <i class="far fa-heart text-danger fa-3x"></i>
+              <i class="fas fa-face-smile text-success fa-3x"></i>
             </div>
           </div>
         </div>
@@ -397,15 +355,15 @@
           <div class="d-flex justify-content-between p-md-1">
             <div class="d-flex flex-row">
               <div class="align-self-center">
-                <h2 class="h1 mb-0 me-4">$36,000.00</h2>
+                <h2 class="h1 mb-0 me-4">{{ average_negative_emotion }} %</h2>
               </div>
               <div>
-                <h4>Total Cost</h4>
-                <p class="mb-0">Monthly Cost</p>
+                <h4>{{ _('NEGATIVE') }}</h4>
+                <p class="mb-0">{{ _('Monthly average') }}</p>
               </div>
             </div>
             <div class="align-self-center">
-              <i class="fas fa-wallet text-success fa-3x"></i>
+              <i class="fas fa-face-angry text-danger fa-3x"></i>
             </div>
           </div>
         </div>
