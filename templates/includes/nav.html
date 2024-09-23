@@ -29,10 +29,12 @@
     <!-- Left elements -->
 
     <!-- Center elements -->
+    
     <ul class="navbar-nav flex-row d-none d-md-flex">
+      {% if user.is_authenticated and user.is_staff %}
       <li class="nav-item me-3 me-lg-1 active">
         <a class="nav-link" href="{% url 'index' %}">
-          <span><i class="fas fa-chart-line fa-lg me-1"></i>{{ _("Dashboard") }}</span>
+          <span><i class="fas fa-tachometer-alt fa-lg me-1"></i>{{ _("Dashboard") }}</span>
         </a>
       </li>
 
@@ -41,6 +43,13 @@
           <span><i class="fas fa-clapperboard fa-lg me-1"></i>{{ _("Uploaded videos") }}</span>
         </a>
       </li>
+      {% else %}
+      <li class="nav-item me-3 me-lg-1">
+        <a class="nav-link" href="{% url 'employee:me' %}">
+          <span><i class="fas fa-clapperboard fa-lg me-1"></i>{{ _("Uploaded videos") }}</span>
+        </a>
+      </li>
+      {% endif %}
     </ul>
     <!-- Center elements -->
 

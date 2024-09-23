@@ -1,6 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 {% load humanize %}
+{% load i18n %}
 
 {% block title %}{{ _("Uploaded videos") }}{% endblock %}
 
@@ -17,6 +18,7 @@
             <th scope="col">{{ _("Employee name")}}</th>
             <th scope="col">{{ _("Work area") }}</th>
             <th scope="col">{{ _("Work shift") }}</th>
+            <th scope="col">{{ _("Work modality") }}</th>
             <th scope="col">{{ _("File name") }}</th>
             
             <th scope="col">{{ _("File type") }}</th>
@@ -25,6 +27,7 @@
             <th scope="col">{{ _("Capture time") }}</th>
             <th scope="col">{{ _("Analysis time") }}</th>
             <th scope="col">{{ _("Emotions detected") }}</th>
+            <th scope="col">{{ _("Dominant emotion") }}</th>
             <th scope="col" class="text-center">{{ _("Actions") }}</th>
           </tr>
         </thead>
@@ -34,6 +37,7 @@
             <td>{{ qs.profile.user.first_name }} {{ qs.profile.user.last_name }}</td>
             <td>{{ qs.profile.worker_area.name }}</td>
             <td>{{ qs.profile.work_shift.name }}</td>
+            <td>{{ qs.get_work_modality_display }}</td>
             <!--
             <td>{{ qs.video_filename }}</td>
             -->
@@ -49,8 +53,10 @@
             <td>{{ qs.recorded_at|naturaltime }}</td>
             <td>{{ qs.analyzed_at }}</td>
             <td>{{ qs.emotions_detected }}</td>
+            <td>{% trans qs.emotions_detected.dominant_emotion %}</td>
             <td class="noExport text-center">
               <nobr>
+                <!--
                 <button type="button" class="btn btn-primary btn-sm btn-floating"
                     data-mdb-toggle="tooltip"
                     data-mdb-placement="top"
@@ -60,6 +66,7 @@
                     onclick="return openModal('{% url 'employee:video_edit' qs.pk %}');">
                       <i class="fas fa-pen"></i>
                   </button>
+                -->
                   <button type="button" class="btn btn-danger btn-sm btn-floating"
                     data-mdb-toggle="tooltip"
                     data-mdb-placement="top"
@@ -143,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     "buttons": {
       "buttons": [
         'btnNew',
+        { extend: 'excel', className: 'btn btn-success btn-sm btn-floating', text: '<i class="fas fa-file-excel fa-lg"></i>', exportOptions: { columns: ':not(:last-child)', }, },
       ],
       "dom": {
         button: {

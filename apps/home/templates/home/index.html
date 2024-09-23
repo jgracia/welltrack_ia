@@ -4,67 +4,6 @@
 {% block title %}{{ _("Dashboard") }}{% endblock %}
 
 {% block content %}
-<!-- Section: Main chart -->
-<section class="mb-4">
-  <div class="card">
-    <div class="card-header py-3">
-      <h5 class="mb-0 text-center"><strong>{{ _("Emotions of the current year, until the current month") }}</strong></h5>
-    </div>
-    <div class="card-body">
-      <canvas class="my-4 w-100" id="emotionChart" height="380"></canvas>
-    </div>
-  </div>
-</section>
-<!-- Section: Main chart -->
-
-<!--Section: Sales Performance KPIs-->
-<section class="mb-4">
-  <div class="card">
-    <div class="card-header text-center py-3">
-      <h5 class="mb-0 text-center">
-        <strong>{{ _("Total emotions per work shift during the current year") }}</strong>
-      </h5>
-    </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-hover text-nowrap">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col" class="text-end">😢 {{ _('sad') }}</th>
-              <th scope="col" class="text-end">😨 {{ _('fear') }}</th>
-              <th scope="col" class="text-end">😠 {{ _('angry') }}</th>
-              <th scope="col" class="text-end">😊 {{ _('happy') }}</th>
-              <th scope="col" class="text-end">🤢 {{ _('disgust') }}</th>
-              <th scope="col" class="text-end">😐 {{ _('neutral') }}</th>
-              <th scope="col" class="text-end">😲 {{ _('surprise') }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for shift, emotions in work_shift_emotions.items %}
-              <tr>
-                <th scope="row">{{ shift }}</th>
-                <td class="text-end">{{ emotions.sad|default:0 }}</td>
-                <td class="text-end">{{ emotions.fear|default:0 }}</td>
-                <td class="text-end">{{ emotions.angry|default:0 }}</td>
-                <td class="text-end">{{ emotions.happy|default:0 }}</td>
-                <td class="text-end">{{ emotions.disgust|default:0 }}</td>
-                <td class="text-end">{{ emotions.neutral|default:0 }}</td>
-                <td class="text-end">{{ emotions.surprise|default:0 }}</td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="8" class="text-center bg-info">{{ _("There are no processed emotions.") }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
-<!--Section: Sales Performance KPIs-->
-
 <!--Section: Minimal statistics cards-->
 <section>
   <div class="row">
@@ -372,10 +311,44 @@
   </div>
 </section>
 <!--Section: Statistics with subtitles-->
+
+<!--Section: Chart by day -->
+<section class="mb-4">
+  <div class="card">
+    <!--
+    <div class="card-header text-center py-3">
+      <h5 class="mb-0 text-center">
+        <strong>{{ _("Emotions in the current day") }}</strong>
+      </h5>
+    </div>
+    -->
+    <div class="card-body">
+      <canvas class="my-4 w-100" id="emotionChartByDay" height="380"></canvas>
+    </div>
+  </div>
+</section>
+<!--Section: Chart by day -->
+
+<!-- Section: Main chart -->
+<section class="mb-4">
+  <div class="card">
+    <!--
+    <div class="card-header py-3">
+      <h5 class="mb-0 text-center"><strong>{{ _("Emotions of the current year, until the current month") }}</strong></h5>
+    </div>
+    -->
+    <div class="card-body">
+      <canvas class="my-4 w-100" id="emotionChart" height="380"></canvas>
+    </div>
+  </div>
+</section>
+<!-- Section: Main chart -->
 {% endblock content %}
 
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <!-- Custom scripts -->
 <script type="text/javascript" src="{% static 'js/emotions_chart.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/daily_by_shift_chart.js' %}"></script>
 {% endblock extra_js %}

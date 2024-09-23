@@ -1,3 +1,4 @@
+from django.utils import timezone
 from datetime import datetime
 from collections import defaultdict
 
@@ -12,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
 from .forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserPasswordChangeForm, UserSetPasswordForm
-from apps.employee.models import EmotionAnalysis
+from apps.employee.models import EmotionAnalysis, WorkerArea, WorkShift
 
 # Create your views here.
 
@@ -52,7 +53,7 @@ def index(request):
 
 
 def index(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff:
         current_year = datetime.now().year
         object_list = EmotionAnalysis.objects.filter(recorded_at__year=current_year)
         
@@ -83,34 +84,66 @@ def index(request):
         total_empleados_inactivos = User.objects.filter(is_active=False).count()
         total_videos_analyzed = EmotionAnalysis.objects.count()
 
-
         # Calculate the average dominant emotion
         if total_emotions > 0:
             dominant_emotion_name = max(emotion_counts, key=emotion_counts.get)
             dominant_emotion_count = emotion_counts[dominant_emotion_name]
             dominant_emotion_percentage = (dominant_emotion_count / total_emotions) * 100
             dominant_emotion_name = _(dominant_emotion_name)
+            average_positive_emotion = (positive_emotion_count / total_emotions) * 100
+            average_negative_emotion = (negative_emotion_count / total_emotions) * 100
         else:
-            dominant_emotion_name = _ ('None')
+            dominant_emotion_name = _('None')
             dominant_emotion_percentage = 0
+            average_positive_emotion = 0
+            average_negative_emotion = 0
 
+        #current_date = datetime.now().date()
+        #print("\n=> Current Date: ", current_date)
+        #print()
+
+        # day = timezone.now()
+        # formatedDay = day.strftime("%Y-%m-%d")
+
+        # Obtener la fecha y hora actual
+        #now = datetime.now()
+        
+        # Ajustar la hora a las 00:00
+        #start_of_day = datetime(now.year, now.month, now.day)
+
+        #worker_area_list = WorkerArea.objects.all().values(
+        #    'id', 'name').order_by('name')
+        #work_shift_list = WorkShift.objects.all().values(
+        #    'id', 'name').order_by('name')
         context = {
             'segment': 'index',
-            'work_shift_emotions': work_shift_emotions,
+            #'current_date': current_date.strftime('%Y-%m-%d'),
+            #'worker_area_list': worker_area_list,
+            #'work_shift_list': work_shift_list,
+            # 'start_date': formatedDay,
+            # 'end_date': formatedDay,
+            # 'start_date_time': day.strftime("%Y-%m-%d %H:%M"),
+            # 'end_date_time': day.strftime("%Y-%m-%d %H:%M"),
+            #'start_date_time': start_of_day.strftime("%Y-%m-%d %H:%M"),
+            #'end_date_time': datetime.now().strftime("%Y-%m-%d %H:%M"),
+            #'work_shift_emotions': work_shift_emotions,
             'total_employees': total_active_employees,
             'total_empleados_inactivos': total_empleados_inactivos,
             'total_videos_analyzed': total_videos_analyzed,
             'dominant_emotion_name': dominant_emotion_name,
-            'dominant_emotion_percentage': dominant_emotion_percentage,
-            'average_positive_emotion': (positive_emotion_count / total_emotions) * 100,
-            'average_negative_emotion': (negative_emotion_count / total_emotions) * 100,
+            'dominant_emotion_percentage': round(dominant_emotion_percentage, 2),
+            'average_positive_emotion': round(average_positive_emotion, 2),
+            'average_negative_emotion': round(average_negative_emotion, 2)
         }
         
         return render(request, 'home/index.html', context)
-    else:
-        print('\nnot logged in')
-        context = {'segment': 'index'}
-        return render(request, 'home/index.html', context)
+    elif request.user.is_authenticated:
+        return redirect('employee:me')
+
+    #else:
+    #    print('\nnot logged in')
+    #    context = {'segment': 'index'}
+    #    return render(request, 'home/index.html', context)
 
 
 

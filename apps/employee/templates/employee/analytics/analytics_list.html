@@ -44,7 +44,7 @@
         <li class="nav-item" role="presentation">
           <a data-mdb-pill-init class="nav-link" id="ex3-tab-4"
             href="#ex3-pills-4" role="tab" aria-controls="ex3-pills-4" aria-selected="false">
-            <i class="fas fa-users fa-fw me-2"></i>{{ _("Employees") }}</a>
+            <i class="fas fa-users fa-fw me-2"></i>{{ _("Employee") }}</a>
         </li>
       </ul>
       <!-- Pills navs -->
@@ -75,9 +75,9 @@
                 <label for="workerAreaFilterRangeDate" class="col-form-label me-2"><b style="color: #dc3545;">{{ _("Select date range") }}:</b></label>
                 <div id="workerAreaFilterRangeDate" class="input-group">
                   <span class="input-group-text">Desde:</span>
-                  <input type="date" id="workerAreaStartDate" name="workerAreaStartDate" value="{{ start_date }}" class="form-control" />
+                  <input type="date" id="workerAreaStartDate" name="workerAreaStartDate" value="{{ current_date }}" class="form-control" />
                   <span class="input-group-text">Hasta:</span>
-                  <input type="date" id="workerAreaEndDate" name="workerAreaEndDate" value="{{ start_date }}" class="form-control" />
+                  <input type="date" id="workerAreaEndDate" name="workerAreaEndDate" value="{{ current_date }}" class="form-control" />
                 </div>
               </div>
             </div>
@@ -135,9 +135,9 @@
                 <label for="workShiftRangeDate" class="col-form-label me-2"><b style="color: #dc3545;">{{ _("Select date range") }}:</b></label>
                 <div id="workShiftRangeDate" class="input-group">
                   <span class="input-group-text">Desde:</span>
-                  <input type="date" id="workShiftStartDate" name="workShiftStartDate" value="{{ start_date }}" class="form-control" />
+                  <input type="date" id="workShiftStartDate" name="workShiftStartDate" value="{{ current_date }}" class="form-control" />
                   <span class="input-group-text">Hasta:</span>
-                  <input type="date" id="workShiftEndDate" name="workShiftEndDate" value="{{ start_date }}" class="form-control" />
+                  <input type="date" id="workShiftEndDate" name="workShiftEndDate" value="{{ current_date }}" class="form-control" />
                 </div>
               </div>
             </div>
@@ -181,7 +181,7 @@
                   <span class="input-group-text">Desde:</span>
                   <input type="datetime-local" id="hourStartDateTime" name="hourStartDateTime" value="{{ start_date_time }}" class="form-control" />
                   <span class="input-group-text">Hasta:</span>
-                  <input type="datetime-local" id="hourEndDateTime" name="hourEndDateTime" value="{{ start_date_time }}" class="form-control" />
+                  <input type="datetime-local" id="hourEndDateTime" name="hourEndDateTime" value="{{ end_date_time }}" class="form-control" />
                 </div>
               </div>
             </div>
@@ -229,9 +229,9 @@
                 <label for="employeeFilterRangeDate" class="col-form-label me-2"><b style="color: #dc3545;">{{ _("Select date range") }}:</b></label>
                 <div id="employeeFilterRangeDate" class="input-group">
                   <span class="input-group-text">Desde:</span>
-                  <input type="date" id="employeeStartDate" name="employeeStartDate" value="{{ start_date }}" class="form-control" />
+                  <input type="date" id="employeeStartDate" name="employeeStartDate" value="{{ current_date }}" class="form-control" />
                   <span class="input-group-text">Hasta:</span>
-                  <input type="date" id="employeeEndDate" name="employeeEndDate" value="{{ start_date }}" class="form-control" />
+                  <input type="date" id="employeeEndDate" name="employeeEndDate" value="{{ current_date }}" class="form-control" />
                 </div>
               </div>
             </div>
@@ -287,7 +287,7 @@
     VirtualSelect.init({
       ele: '#employee-select',
       required: true,
-      multiple: true,
+      multiple: false,
       //showValueAsTags: true,
       search: true,
       placeholder: "{{ _('Select the employee here') }}",
@@ -647,14 +647,14 @@
         //const employeeList = document.querySelector('#employee-select').value;
 
         let employeeEl = document.getElementById('employee-select')
-        employeeList = employeeEl.value
-        console.log
+        //employeeList = employeeEl.value
+        const employeeValue = employeeEl.value;
 
         const startDate = document.getElementById('employeeStartDate').value;
         const endDate = document.getElementById('employeeEndDate').value;
 
         // Verificar si employeeList tiene datos
-        if (!employeeList.length) {
+        if (!employeeValue.length) {
           //alert("Por favor, selecciona un empleado.");
           Notiflix.Report.warning(
             'Welltrack Warning',
@@ -696,7 +696,7 @@
         }
 
         const data = {
-          'empoyee_list': employeeList,
+          'employee': employeeValue || '0', // Asigna '0' si no hay valores seleccionados
           'start_date': startDate,
           'end_date': endDate,
         }

@@ -6,6 +6,9 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+import ffmpeg
+from datetime import datetime
+
 # Create your models here.
 
 
@@ -133,9 +136,15 @@ def trackfile_delete_on_change(sender, instance, **kwargs):
 class EmotionAnalysis(models.Model):
     """Modelo para almacenar datos de análisis de emociones de los empleados durante los turnos de trabajo."""
 
+    MODALITY_CHOICES = [
+        ('onsite', _('Onsite')),
+        ('remote', _('Remote')),
+    ]
+
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, help_text=_("The profile of the employee being analyzed"))
     # work_shift = models.ForeignKey(WorkShift, on_delete=models.CASCADE, help_text=_("The work shift during which the analysis is performed"))
     # video_file = models.FileField(upload_to='uploads/emotion_videos/', help_text=_("Video file of the employee during their shift"))
+    work_modality = models.CharField(max_length=10, choices=MODALITY_CHOICES, default='onsite', verbose_name=_('Work modality'), help_text=_("Work modality (onsite, remote)"))
     video_file = models.FileField(upload_to='uploads/emotion_videos/', null=True, blank=True, help_text=_("Video file of the employee during their shift"))
     recorded_at = models.DateTimeField(default=timezone.now, help_text=_("Date and time when the video was recorded"))
     analyzed_at = models.DateTimeField(null=True, blank=True, help_text=_("Date and time when the video was analyzed"))
@@ -146,7 +155,6 @@ class EmotionAnalysis(models.Model):
         User, null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
     updated_by = models.ForeignKey(
         User, null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
-
     # Método para obtener solo el nombre del archivo
     def video_filename(self):
         return self.video_file.name.split('/')[-1]
@@ -175,4 +183,31 @@ class EmotionAnalysis(models.Model):
             old_instance = EmotionAnalysis.objects.get(pk=self.pk)
             if old_instance.video_file and old_instance.video_file != self.video_file:
                 old_instance.video_file.delete(save=False)  # Elimina el archivo anterior si se ha cambiado
-        super().save(*args, **kwargs)
+
+        super().save(*args, **kwargs)  # Guarda el archivo primero para asegurar que esté disponible
+
+        '''
+        # Extraer la fecha de grabación del video (metadato)
+        if self.video_file:
+            print("ingreso aca...")
+            try:
+                video_path = self.video_file.path  # Ruta del archivo de video
+                print("obtubo la ruta................")
+                probe = ffmpeg.probe(video_path)
+                print("paso probe.-..")
+                format_info = probe.get('format', {})
+                print(format_info)
+                creation_time = format_info.get('tags', {}).get('creation_time')
+
+                print("fecha de creacion : ", creation_time)
+
+                if creation_time:
+                    # Convertir la fecha extraída a un objeto datetime
+                    self.recorded_at = datetime.strptime(creation_time, '%Y-%m-%dT%H:%M:%S.%fZ')
+            except ffmpeg.Error as e:
+                print(f"Error al extraer metadatos con ffmpeg: {e}")
+            except Exception as e:
+                print(f"Error inesperado al extraer metadatos: {e}")
+
+        super().save(*args, **kwargs)  # Guarda nuevamente para actualizar el campo recorded_at
+        '''

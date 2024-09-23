@@ -71,4 +71,22 @@ urlpatterns = [
          name='get_hourly_emotions'),
     path('get_employee_hourly_emotions/', login_required(views.get_employee_hourly_emotions),
          name='get_employee_hourly_emotions'),
+
+    # rutas charts
+    path('charts', login_required(views.charts), name='charts'),
+    path('get_worker_area_chart_data/', 
+         login_required(views.get_worker_area_chart_data),
+         name='get_worker_area_chart_data'),
+    path('get_work_shift_chart_data/', 
+         login_required(views.get_work_shift_chart_data),
+         name='get_work_shift_chart_data'),
+    path('get_hour_chart_data/', 
+         login_required(views.get_hour_chart_data),
+         name='get_hour_chart_data'),
+    path('get_employee_chart_data/', 
+         login_required(views.get_employee_chart_data),
+         name='get_employee_chart_data'),
+
+    # rutas del usuario normal
+    path('me', login_required(views.MeListView.as_view()), name="me"),
 ]

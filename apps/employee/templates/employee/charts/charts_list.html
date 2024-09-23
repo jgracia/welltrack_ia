@@ -1,0 +1,876 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{{ _("Emotional Analytic") }}{% endblock %}
+
+{% block extrastyle %}
+  <link href="{% static 'vendor/virtual-select/dist/virtual-select.min.css' %}" rel="stylesheet">
+
+  <style>
+    #employee-select {max-width: 100%; }
+
+    /* estilos separador en select option */
+    .divider {
+      font-size: 0.15px;
+      background: rgba(181, 197, 201);
+    }
+  </style>
+{% endblock extrastyle %}
+
+{% block content %}
+<section class="mb-4">
+  <div class="card">
+    <div class="card-header py-3">
+      <h5 class="mb-0 text-center"><strong>{{ _("Statistical Charts") }}</strong></h5>
+    </div>
+    <div class="card-body">
+      <!-- Pills navs -->
+      <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a data-mdb-pill-init class="nav-link active" id="ex3-tab-1"
+            href="#ex3-pills-1" role="tab" aria-controls="ex3-pills-1" aria-selected="true">
+            <i class="fas fa-diagram-project fa-fw me-2"></i>{{ _("Work area") }}</a></a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a data-mdb-pill-init class="nav-link" id="ex3-tab-2"
+            href="#ex3-pills-2" role="tab" aria-controls="ex3-pills-2" aria-selected="false">
+            <i class="fas fa-user-clock fa-fw me-2"></i>{{ _("Work shift") }}</a></a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a data-mdb-pill-init class="nav-link" id="ex3-tab-3"
+            href="#ex3-pills-3" role="tab" aria-controls="ex3-pills-3" aria-selected="false">
+            <i class="fas fa-clock fa-fw me-2"></i>{{ _("Date and Hour") }}</a></a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a data-mdb-pill-init class="nav-link" id="ex3-tab-4"
+            href="#ex3-pills-4" role="tab" aria-controls="ex3-pills-4" aria-selected="false">
+            <i class="fas fa-users fa-fw me-2"></i>{{ _("Employee") }}</a>
+        </li>
+      </ul>
+      <!-- Pills navs -->
+
+      <!-- Pills content -->
+      <div class="tab-content" id="ex2-content">
+        <div class="tab-pane fade show active" id="ex3-pills-1"
+          role="tabpanel" aria-labelledby="ex3-tab-1">
+
+          {# EMOCIONES POR ÁREA #}
+          <div class="row mb-3">
+            <div class="col-md-4 d-flex align-items-center">
+              <div class="col">
+                <label for="workerAreaFilter" class="col-form-label me-2"><b style="color: #54B4D3;">{{ _("Select worker area") }}:</b></label>
+                <select id="workerAreaFilter" name="workerAreaFilter" class="form-control form-select" required>
+                  <option value="" selected>---------</option>
+                  {% for qs in worker_area_list %}
+                    <option value="{{ qs.id }}">{{ qs.name }}</option>
+                  {% endfor %}
+                  <optgroup class="divider"></optgroup>
+                  <option value="0">{{ _("All work areas") }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6 d-flex align-items-center">
+              <div class="col">
+                <label for="workerAreaFilterRangeDate" class="col-form-label me-2"><b style="color: #54B4D3;">{{ _("Select date range") }}:</b></label>
+                <div id="workerAreaFilterRangeDate" class="input-group">
+                  <span class="input-group-text">Desde:</span>
+                  <input type="date" id="workerAreaStartDate" name="workerAreaStartDate" value="{{ current_date }}" class="form-control" />
+                  <span class="input-group-text">Hasta:</span>
+                  <input type="date" id="workerAreaEndDate" name="workerAreaEndDate" value="{{ current_date }}" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-center">
+              <button id="buttonFilterByWorkerArea" class="btn btn-sm btn-info mt-5">
+                <i class="fas fa-magnifying-glass me-2"></i>{{ _("Filter") }}
+              </button>
+            </div>
+          </div>
+
+          {# GRAFICO POR ÁREA #}
+          <canvas class="my-1 w-100" id="workerAreaChart" height="380"></canvas>
+        </div>
+        <div
+          class="tab-pane fade" id="ex3-pills-2"
+          role="tabpanel" aria-labelledby="ex3-tab-2">
+          
+          {# EMOCIONES POR TURNOS #}
+          <div class="row mb-3">
+            <div class="col-md-4 d-flex align-items-center">
+              <div class="col">
+                <label for="workShiftFilter" class="col-form-label me-2"><b style="color: #54B4D3;">{{ _("Select work shift") }}:</b></label>
+                <select id="workShiftFilter" name="workShiftFilter" class="form-control form-select" required>
+                  <option value="" selected>---------</option>
+                  {% for qs in work_shift_list %}
+                    <option value="{{ qs.id }}">{{ qs.name }}</option>
+                  {% endfor %}
+                  <optgroup class="divider"></optgroup>
+                  <option value="0">{{ _("All work shifts") }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6 d-flex align-items-center">
+              <div class="col">
+                <label for="workShiftRangeDate" class="col-form-label me-2"><b style="color: #54B4D3;">{{ _("Select date range") }}:</b></label>
+                <div id="workShiftRangeDate" class="input-group">
+                  <span class="input-group-text">Desde:</span>
+                  <input type="date" id="workShiftStartDate" name="workShiftStartDate" value="{{ current_date }}" class="form-control" />
+                  <span class="input-group-text">Hasta:</span>
+                  <input type="date" id="workShiftEndDate" name="workShiftEndDate" value="{{ current_date }}" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-center">
+              <button id="buttonFilterByWorkShift" class="btn btn-sm btn-info mt-5">
+                <i class="fas fa-magnifying-glass me-2"></i>{{ _("Filter") }}
+              </button>
+            </div>
+          </div>
+          
+          {# GRAFICO POR TURNO #}
+          <canvas class="my-1 w-100" id="workShiftChart" height="380"></canvas>
+
+        </div>
+        <div class="tab-pane fade" id="ex3-pills-3"
+          role="tabpanel" aria-labelledby="ex3-tab-3">
+          
+          {# EMOCIONES POR HORAS #}
+          <div class="row mb-3">
+            <div class="col-md-6 d-flex align-items-center">
+              <div class="col">
+                <label for="rangeHours" class="col-form-label me-2"><b style="color: #54B4D3;">{{ _("Select date time range") }}:</b></label>
+                <div id="rangeHours" class="input-group">
+                  <span class="input-group-text">Desde:</span>
+                  <input type="datetime-local" id="hourStartDateTime" name="hourStartDateTime" value="{{ start_date_time }}" class="form-control" />
+                  <span class="input-group-text">Hasta:</span>
+                  <input type="datetime-local" id="hourEndDateTime" name="hourEndDateTime" value="{{ end_date_time }}" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-center">
+              <button id="buttonFilterHours" class="btn btn-sm btn-info mt-5">
+                <i class="fas fa-magnifying-glass me-2"></i>{{ _("Filter") }}
+              </button>
+            </div>
+          </div>
+          
+          {# GRAFICO POR HORAS #}
+          <canvas class="my-1 w-100" id="hoursChart" height="380"></canvas>
+
+        </div>
+        <div class="tab-pane fade" id="ex3-pills-4"
+          role="tabpanel" aria-labelledby="ex3-tab-4">
+
+          {# EMOCIONES POR EMPLEADO #}
+          <div class="row mb-3">
+            <div class="col-md-4 d-flex align-items-center">
+              <div class="col">
+                <label for="employee-select" class="col-form-label"><b style="color: #54B4D3;">{{ _("Select employee") }}:</b></label><br>
+                <div id="employee-select"></div>
+              </div>
+            </div>
+
+            <div class="col-md-6 d-flex align-items-center">
+              <div class="col">
+                <label for="employeeFilterRangeDate" class="col-form-label me-2"><b style="color: #54B4D3;">{{ _("Select date range") }}:</b></label>
+                <div id="employeeFilterRangeDate" class="input-group">
+                  <span class="input-group-text">Desde:</span>
+                  <input type="date" id="employeeStartDate" name="employeeStartDate" value="{{ current_date }}" class="form-control" />
+                  <span class="input-group-text">Hasta:</span>
+                  <input type="date" id="employeeEndDate" name="employeeEndDate" value="{{ current_date }}" class="form-control" />
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2 d-flex align-items-center">
+              <button id="buttonFilterByEmployee" class="btn btn-sm btn-info mt-5">
+                <i class="fas fa-magnifying-glass me-2"></i>{{ _("Filter") }}
+              </button>
+            </div>
+          </div>
+          
+          {# GRAFICO POR EMPLEADO #}
+          <canvas class="my-1 w-100" id="employeeChart" height="380"></canvas>
+
+        </div>
+      </div>
+      <!-- Pills content -->
+    </div>
+  </div>
+</section>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'vendor/virtual-select/dist/virtual-select.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script>
+  const current_date = "{{ current_date }}"
+
+  VirtualSelect.init({
+    ele: '#employee-select',
+    required: true,
+    multiple: false,
+    //showValueAsTags: true,
+    search: true,
+    placeholder: "{{ _('Select the employee here') }}",
+    searchPlaceholderText: "{{ _('Search...') }}",
+    noSearchResultsText: "{{ _('No results found') }}",
+    onServerSearch: onEmployeeSelectServerSearch,
+  });
+
+  function onEmployeeSelectServerSearch(searchValue, virtualSelect) {
+    fetch('/api/employee_apiview?q=' + searchValue)
+    .then(response => response.json())
+    .then(data => virtualSelect.setServerOptions(data));
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setupWorkerAreaChart();
+    setupWorkShiftChart();
+    setupHourChart();
+    setupEmployeeChart();
+  });
+
+  // filtro por área de trabajo
+  const buttonFilterByWorkerArea = document.getElementById("buttonFilterByWorkerArea");
+  buttonFilterByWorkerArea.addEventListener("click", (event) => {
+
+    const selectElementArea = document.getElementById('workerAreaFilter')
+    // Get the selected option
+    const selectedAreaOption = selectElementArea.options[selectElementArea.selectedIndex];
+    // Get the value and text of the selected option
+    const workerArea = selectedAreaOption.value;
+
+    const startDate = document.getElementById('workerAreaStartDate').value;
+    const endDate = document.getElementById('workerAreaEndDate').value;
+
+    // Verificar si workerArea tiene datos
+    if (!workerArea) {
+        //alert("Por favor, selecciona un área de trabajo.");
+        Notiflix.Report.warning(
+          'Welltrack Warning',
+          "{{ _('Please select a work area.') }}",
+          'Okay',
+        );
+        return;
+    }
+
+    // Verificar si las fechas son válidas
+    if (!startDate || !endDate) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select a valid date range.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+
+    if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select valid dates.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    if (startDateObj > endDateObj) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('The start date cannot be later than the end date.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    setupWorkerAreaChart();
+  })
+
+  // filtro por turno de trabajo
+  const buttonFilterByWorkShift = document.getElementById("buttonFilterByWorkShift");
+  buttonFilterByWorkShift.addEventListener("click", (event) => {
+    const selectElementWorkShift = document.getElementById('workShiftFilter')
+    // Get the selected option
+    const selectedWorkShiftOption = selectElementWorkShift.options[selectElementWorkShift.selectedIndex];
+    // Get the value and text of the selected option
+    const workShift = selectedWorkShiftOption.value;
+
+    const startDate = document.getElementById('workShiftStartDate').value;
+    const endDate = document.getElementById('workShiftEndDate').value;
+
+    // Verificar si workerArea tiene datos
+    if (!workShift) {
+        //alert("Por favor, selecciona un área de trabajo.");
+        Notiflix.Report.warning(
+          'Welltrack Warning',
+          "{{ _('Please select a work shift.') }}",
+          'Okay',
+        );
+        return;
+    }
+
+    // Verificar si las fechas son válidas
+    if (!startDate || !endDate) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select a valid date range.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+
+    if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select valid dates.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    if (startDateObj > endDateObj) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('The start date cannot be later than the end date.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    setupWorkShiftChart();
+  })
+
+  // fitro por fecha y hora
+  const buttonFilterHours = document.getElementById("buttonFilterHours");
+  buttonFilterHours.addEventListener("click", (event) => {
+    const startDateTime = document.getElementById('hourStartDateTime').value;
+    const endDateTime = document.getElementById('hourEndDateTime').value;
+
+    // Verificar si las fechas son válidas
+    if (!startDateTime || !endDateTime) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select a valid date range.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    const startDateTimeObj = new Date(startDateTime);
+    const endDateTimeObj = new Date(endDateTime);
+
+    if (isNaN(startDateTimeObj.getTime()) || isNaN(endDateTimeObj.getTime())) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select valid dates.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    if (startDateTimeObj > endDateTimeObj) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('The start date cannot be later than the end date.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    setupHourChart();
+  })
+
+  // filtro por empleados
+  const buttonFilterByEmployee = document.getElementById("buttonFilterByEmployee");
+  buttonFilterByEmployee.addEventListener("click", (event) => {
+    let employeeEl = document.getElementById('employee-select')
+    employeeList = employeeEl.value
+
+    const startDate = document.getElementById('employeeStartDate').value;
+    const endDate = document.getElementById('employeeEndDate').value;
+
+    // Verificar si employeeList tiene datos
+    if (!employeeList.length) {
+      //alert("Por favor, selecciona un empleado.");
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select an employee.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    // Verificar si las fechas son válidas
+    if (!startDate || !endDate) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select a valid date range.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+
+    if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('Please select valid dates.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    if (startDateObj > endDateObj) {
+      Notiflix.Report.warning(
+        'Welltrack Warning',
+        "{{ _('The start date cannot be later than the end date.') }}",
+        'Okay',
+      );
+      return;
+    }
+
+    setupEmployeeChart();
+  })
+
+  // Declarar una variable global para almacenar la instancia del gráfico
+  let byAreaChart = null;
+  
+  const setupWorkerAreaChart = async () => {
+    const data = await fetchWorkerAreaData();
+
+    const canvas = document.getElementById('workerAreaChart');
+    const ctxByArea = canvas.getContext('2d');
+
+    // Verificar si el gráfico ya existe y destruirlo antes de crear uno nuevo
+    if (byAreaChart !== null) {
+        byAreaChart.destroy();  // Destruir el gráfico anterior
+
+        canvas.width = canvas.clientWidth;  // Asegura que se reasigne el ancho del canvas
+        canvas.height = 380;  // Reasignar el valor de altura
+    }
+
+    // Crear el nuevo gráfico
+    byAreaChart = new Chart(ctxByArea, {
+      type: 'bar',  // O el tipo de gráfico que prefieras
+      data: {
+        labels: data.labels,  // Áreas en el eje horizontal
+        datasets: data.datasets  // Datos de emociones para las horas
+      },
+      options: {
+        //responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Gráfico de videos por área y hora",
+            font: { size: 14 }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            formatter: (value) => value,
+            color: 'black',
+            font: { weight: 'bold' }
+          }
+        },
+        /*layout: {
+            padding: {
+                top: 40,  // Ajusta este valor según sea necesario
+            }
+        },*/
+        scales: {
+          x: {
+              title: {
+                display: true,
+                text: 'Área de Trabajo - Hora'  // Etiqueta del eje X
+              }
+          },
+          y: {
+              title: {
+                display: true,
+                text: 'Videos Totales'  // Etiqueta del eje Y
+              },
+              ticks: {
+                padding: 2  // Ajusta este valor según sea necesario
+              },
+              afterDataLimits: (axis) => {
+                axis.max += 2;  // Ajusta este valor según sea necesario para dejar espacio en la parte superior
+              }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  };
+
+  const fetchWorkerAreaData = async () => {
+    try {
+      const selectElementArea = document.getElementById('workerAreaFilter')
+      const selectedAreaOption = selectElementArea.options[selectElementArea.selectedIndex];
+      const workerArea = selectedAreaOption.value;
+
+      const startDate = document.getElementById('workerAreaStartDate').value;
+      const endDate = document.getElementById('workerAreaEndDate').value;
+
+      const url = "{% url 'employee:get_worker_area_chart_data' %}"
+      const data = {
+        'worker_area': workerArea,
+        'start_date': startDate,
+        'end_date': endDate,
+      }
+      const csrftoken = getCookie('csrftoken');
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        throw new Error('Error en la solicitud');
+      }
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error('Error:', error);
+      return null;  // O puedes manejar el error de otra manera
+    }
+  };
+
+
+  // Declarar una variable global para almacenar la instancia del gráfico
+  let byWorkShiftChart = null;
+
+  // configuración gráfico por turno de trabajo
+  const setupWorkShiftChart = async () => {
+    const data = await fetchWorkShiftData();
+
+    const canvasWorkShift = document.getElementById('workShiftChart');
+    const ctxByWorkShift = canvasWorkShift.getContext('2d');
+
+    // Verificar si el gráfico ya existe y destruirlo antes de crear uno nuevo
+    if (byWorkShiftChart !== null) {
+        byWorkShiftChart.destroy();  // Destruir el gráfico anterior
+
+        canvasWorkShift.width = canvasWorkShift.clientWidth;  // Asegura que se reasigne el ancho del canvas
+        canvasWorkShift.height = 380;  // Reasignar el valor de altura
+    }
+
+    // Crear el nuevo gráfico
+    byWorkShiftChart = new Chart(ctxByWorkShift, {
+      type: 'bar',  // O el tipo de gráfico que prefieras
+      data: {
+        labels: data.labels,  // Áreas en el eje horizontal
+        datasets: data.datasets  // Datos de emociones para las horas
+      },
+      options: {
+        //responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Gráfico de videos por turno y hora",
+            font: { size: 14 }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            formatter: (value) => value,
+            color: 'black',
+            font: { weight: 'bold' }
+          }
+        },
+        /*layout: {
+            padding: {
+                top: 40,  // Ajusta este valor según sea necesario
+            }
+        },*/
+        scales: {
+          x: {
+              title: {
+                display: true,
+                text: 'Turno de Trabajo - Hora'  // Etiqueta del eje X
+              }
+          },
+          y: {
+              title: {
+                display: true,
+                text: 'Videos Totales'  // Etiqueta del eje Y
+              },
+              ticks: {
+                padding: 2  // Ajusta este valor según sea necesario
+              },
+              afterDataLimits: (axis) => {
+                axis.max += 2;  // Ajusta este valor según sea necesario para dejar espacio en la parte superior
+              }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  }
+
+  const fetchWorkShiftData = async () => {
+    try {
+      const selectElementWorkShift = document.getElementById('workShiftFilter')
+      const selectedWorkShiftOption = selectElementWorkShift.options[selectElementWorkShift.selectedIndex];
+      const workShift = selectedWorkShiftOption.value;
+
+      const startDate = document.getElementById('workShiftStartDate').value;
+      const endDate = document.getElementById('workShiftEndDate').value;
+
+      const url = "{% url 'employee:get_work_shift_chart_data' %}"
+      const data = {
+        'work_shift': workShift,
+        'start_date': startDate,
+        'end_date': endDate,
+      }
+      const csrftoken = getCookie('csrftoken');
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        throw new Error('Error en la solicitud');
+      }
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error('Error:', error);
+      return null;  // O puedes manejar el error de otra manera
+    }
+  }
+
+
+  // Declarar una variable global para almacenar la instancia del gráfico
+  let byHourChart = null;
+
+  const setupHourChart = async () => {
+    const data = await fetchHourData();
+
+    const canvasHour = document.getElementById('hoursChart');
+    const ctxByHour = canvasHour.getContext('2d');
+
+    // Verificar si el gráfico ya existe y destruirlo antes de crear uno nuevo
+    if (byHourChart !== null) {
+        byHourChart.destroy();  // Destruir el gráfico anterior
+
+        canvasHour.width = canvasHour.clientWidth;  // Asegura que se reasigne el ancho del canvas
+        canvasHour.height = 380;  // Reasignar el valor de altura
+    }
+
+    // Crear el nuevo gráfico
+    byHourChart = new Chart(ctxByHour, {
+      type: 'bar',  // O el tipo de gráfico que prefieras
+      data: {
+        labels: data.labels,  // Áreas en el eje horizontal
+        datasets: data.datasets  // Datos de emociones para las horas
+      },
+      options: {
+        //responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Gráfico de videos por fecha y hora",
+            font: { size: 14 }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            formatter: (value) => value,
+            color: 'black',
+            font: { weight: 'bold' }
+          }
+        },
+        /*layout: {
+            padding: {
+                top: 40,  // Ajusta este valor según sea necesario
+            }
+        },*/
+        scales: {
+          x: {
+              title: {
+                display: true,
+                text: 'Fecha - Hora'  // Etiqueta del eje X
+              }
+          },
+          y: {
+              title: {
+                display: true,
+                text: 'Videos Totales'  // Etiqueta del eje Y
+              },
+              ticks: {
+                padding: 2  // Ajusta este valor según sea necesario
+              },
+              afterDataLimits: (axis) => {
+                axis.max += 2;  // Ajusta este valor según sea necesario para dejar espacio en la parte superior
+              }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  };
+
+  const fetchHourData = async () => {
+    try {
+      const startDateTime = document.getElementById('hourStartDateTime').value;
+      const endDateTime = document.getElementById('hourEndDateTime').value;
+
+      const url = "{% url 'employee:get_hour_chart_data' %}"
+      const data = {
+        'start_date_time': startDateTime,
+        'end_date_time': endDateTime,
+      }
+      const csrftoken = getCookie('csrftoken');
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        throw new Error('Error en la solicitud');
+      }
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error('Error:', error);
+      return null;  // O puedes manejar el error de otra manera
+    }
+  }
+
+
+  // Declarar una variable global para almacenar la instancia del gráfico
+  let byEmployeeChart = null;
+
+  const setupEmployeeChart = async () => {
+    const data = await fetchEmployeeData();
+
+    const canvasEmployee = document.getElementById('employeeChart');
+    const ctxByEmployee = canvasEmployee.getContext('2d');
+
+    // Verificar si el gráfico ya existe y destruirlo antes de crear uno nuevo
+    if (byEmployeeChart !== null) {
+        byEmployeeChart.destroy();  // Destruir el gráfico anterior
+
+        canvasEmployee.width = canvasEmployee.clientWidth;  // Asegura que se reasigne el ancho del canvas
+        canvasEmployee.height = 380;  // Reasignar el valor de altura
+    }
+
+    // Crear el nuevo gráfico
+    byEmployeeChart = new Chart(ctxByEmployee, {
+      type: 'bar',  // O el tipo de gráfico que prefieras
+      data: {
+        labels: data.labels,  // Áreas en el eje horizontal
+        datasets: data.datasets  // Datos de emociones para las horas
+      },
+      options: {
+        //responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: "Gráfico de videos por empleado",
+            font: { size: 14 }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            formatter: (value) => value,
+            color: 'black',
+            font: { weight: 'bold' }
+          }
+        },
+        /*layout: {
+            padding: {
+                top: 40,  // Ajusta este valor según sea necesario
+            }
+        },*/
+        scales: {
+          x: {
+              title: {
+                display: true,
+                text: 'Fecha - Hora'  // Etiqueta del eje X
+              }
+          },
+          y: {
+              title: {
+                display: true,
+                text: 'Videos Totales'  // Etiqueta del eje Y
+              },
+              ticks: {
+                padding: 2  // Ajusta este valor según sea necesario
+              },
+              afterDataLimits: (axis) => {
+                axis.max += 2;  // Ajusta este valor según sea necesario para dejar espacio en la parte superior
+              }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  };
+
+  const fetchEmployeeData = async () => {
+    try {
+      let employeeEl = document.getElementById('employee-select')
+      const employeeValue = employeeEl.value || '0';  // Asigna [0] si no hay valores seleccionados
+
+      // console.log("Enviado employee list: " + employeeList);
+
+      const startDate = document.getElementById('employeeStartDate').value;
+      const endDate = document.getElementById('employeeEndDate').value;
+
+      const url = "{% url 'employee:get_employee_chart_data' %}"
+      const data = {
+        'employee': employeeValue,
+        'start_date': startDate,
+        'end_date': endDate,
+      }
+      const csrftoken = getCookie('csrftoken');
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        throw new Error('Error en la solicitud');
+      }
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error('Error:', error);
+      return null;  // O puedes manejar el error de otra manera
+    }
+  };
+</script>
+{% endblock extra_js %}

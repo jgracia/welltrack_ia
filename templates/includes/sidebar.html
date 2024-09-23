@@ -2,15 +2,18 @@
 <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
   <div class="position-sticky">
     <div class="list-group list-group-flush mx-3 mt-4">
+      {% if user.is_authenticated and user.is_staff %}
       <a href="{% url 'index' %}" class="list-group-item list-group-item-action py-2 {% if 'index' in segment %} active {% endif %}" data-mdb-ripple-init aria-current="true">
-        <i class="fas fa-chart-line fa-fw me-3"></i><span>{{ _("Dashboard") }}</span>
+        <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>{{ _("Dashboard") }}</span>
       </a>
+      <a href="{% url 'employee:analytics' %}" class="list-group-item list-group-item-action py-2 {% if 'analytics' in segment %} active {% endif %}" data-mdb-ripple-init>
+        <i class="fas fa-chart-line fa-fw me-3"></i><span>{{ _("Analytic Data") }}</span></a>
+      <a href="{% url 'employee:charts' %}" class="list-group-item list-group-item-action py-2 {% if 'charts' in segment %} active {% endif %}" data-mdb-ripple-init>
+        <i class="fas fa-chart-bar fa-fw me-3"></i><span>{{ _("Charts") }}</span></a>
+
       <a href="{% url 'employee:video_list' %}" class="list-group-item list-group-item-action py-2 {% if 'emotion-video' in segment %} active {% endif %}" data-mdb-ripple-init>
         <i class="fas fa-clapperboard fa-fw me-3"></i><span>{{ _("Uploaded videos") }}</span>
       </a>
-      <a href="{% url 'employee:analytics' %}" class="list-group-item list-group-item-action py-2 {% if 'analytics' in segment %} active {% endif %}" data-mdb-ripple-init>
-        <i class="fas fa-chalkboard-user fa-fw me-3"></i><span>{{ _("Emotional Analytic") }}</span></a>
-      
       <a href="{% url 'employee:employee_list' %}" class="list-group-item list-group-item-action py-2 {% if 'employee' in segment %} active {% endif %}" data-mdb-ripple-init><i
           class="fas fa-users fa-fw me-3"></i><span>{{ _("Employees") }}</span></a>
       <a href="{% url 'employee:worker_area_list' %}" class="list-group-item list-group-item-action py-2 {% if 'worker-area' in segment %} active {% endif %}" data-mdb-ripple-init><i
@@ -31,6 +34,11 @@
           class="fas fa-users fa-fw me-3"></i><span>Users</span></a>
       <a href="#" class="list-group-item list-group-item-action py-2" data-mdb-ripple-init><i
           class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a>-->
+      {% else %}
+      <a href="{% url 'employee:me' %}" class="list-group-item list-group-item-action py-2 {% if 'me' in segment %} active {% endif %}" data-mdb-ripple-init>
+        <i class="fas fa-clapperboard fa-fw me-3"></i><span>{{ _("Uploaded videos") }}</span>
+      </a>
+      {% endif %}
     </div>
   </div>
 </nav>

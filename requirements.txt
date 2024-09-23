@@ -20,3 +20,6 @@ tensorboard==2.8
 celery==5.4.0
 celery-progress==0.4 # progress bar
 redis==5.0.8
+
+# para extrar metadatos del video como fecha de grabación
+ffmpeg-python==0.2.0

@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -10,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from http import HTTPStatus  # enviar estado error en ajax
 from django.db.models.deletion import RestrictedError
 from django.contrib.auth.models import User
+from django.utils.timezone import localtime  # Para ajustar la zona horaria local
 
 from .models import (
     Profile,
@@ -732,8 +734,16 @@ def analytics(request):
     hourly_emotions = {date: {hour: dict(emotions) for hour, emotions in hours.items()} for date, hours in hourly_emotions.items()}
     employee_hourly_emotions = {employee: {date: {hour: dict(emotions) for hour, emotions in hours.items()} for date, hours in dates.items()} for employee, dates in employee_hourly_emotions.items()}'''
 
-    day = timezone.now()
-    formatedDay = day.strftime("%Y-%m-%d")
+    # day = timezone.now()
+    # formatedDay = day.strftime("%Y-%m-%d")
+
+    current_date = datetime.now().date()
+    # Obtener la fecha y hora actual
+    now = datetime.now()
+    
+    # Ajustar la hora a las 00:00
+    start_of_day = datetime(now.year, now.month, now.day)
+
     worker_area_list = WorkerArea.objects.all().values('id', 'name').order_by('name')
     work_shift_list = WorkShift.objects.all().values('id', 'name').order_by('name')
 
@@ -750,10 +760,9 @@ def analytics(request):
         #'employee_hourly_emotions': employee_hourly_emotions
         'worker_area_list': worker_area_list,
         'work_shift_list': work_shift_list,
-        'start_date': formatedDay,
-        'end_date': formatedDay,
-        'start_date_time': day.strftime("%Y-%m-%d %H:%M"),
-        'end_date_time': day.strftime("%Y-%m-%d %H:%M")
+        'current_date': current_date.strftime('%Y-%m-%d'),
+        'start_date_time': start_of_day.strftime("%Y-%m-%d %H:%M"),
+        'end_date_time': datetime.now().strftime("%Y-%m-%d %H:%M"),
     }
 
     return render(request, 'employee/analytics/analytics_list.html', context)
@@ -791,7 +800,8 @@ def get_worker_area_emotions(request):
 
         for obj in object_list:
             area = str(obj.profile.worker_area)
-            recorded_at = obj.recorded_at
+            # recorded_at = obj.recorded_at
+            recorded_at = localtime(obj.recorded_at)  # Convertir a hora local
             date = recorded_at.strftime('%Y-%m-%d')
             hour = recorded_at.strftime('%H:00')
             dominant_emotion = obj.emotions_detected['dominant_emotion']
@@ -816,6 +826,189 @@ def get_worker_area_emotions(request):
             'status': _("Failure"),
             'message': _("Incorrect request"),
         }, status=500)
+
+
+'''
+# funciona prefecto, no coincide con hora de base de datos
+def get_worker_area_chart_data(request):
+    data = json.loads(request.body)
+    worker_area_id = data["worker_area"]
+    start_date = data["start_date"]
+    end_date = data["end_date"]
+
+    # date_obj = datetime.strptime(date, '%Y-%m-%d')
+    object_list = EmotionAnalysis.objects.filter(
+        recorded_at__date__range=(start_date, end_date))
+
+    # Si se ha proporcionado un área específica, filtrar por ella
+    if worker_area_id and worker_area_id != '0':
+        object_list = object_list.filter(profile__worker_area__id=worker_area_id)
+
+    # Inicializar las estructuras de datos
+    area_hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    all_areas = set()
+    all_emotions = set()
+
+    if object_list.exists():
+        # Obtener las emociones detectadas y las áreas de trabajo
+        all_emotions = object_list.first().emotions_detected.get('emotions', {}).keys()
+        all_areas = {obj.profile.worker_area.name for obj in object_list if obj.profile.worker_area}
+
+    # Inicializar los datos para todas las combinaciones de áreas y horas
+    for area in all_areas:
+        for hour in range(24):
+            hour_label = f'{str(hour).zfill(2)}:00'
+            for emotion in all_emotions:
+                area_hourly_emotions[area][hour_label][emotion] = 0
+
+    # Procesar los datos de los objetos obtenidos
+    for obj in object_list:
+        if obj.profile.worker_area:
+            area = obj.profile.worker_area.name
+            recorded_at = obj.recorded_at
+            hour = recorded_at.strftime('%H:00')
+            dominant_emotion = obj.emotions_detected['dominant_emotion']
+
+            # Actualizar los datos por área y hora
+            area_hourly_emotions[area][hour][dominant_emotion] += 1
+
+    # Crear etiquetas combinadas de área y hora
+    labels_with_data = []
+    for area in sorted(all_areas):
+        for hour in range(24):
+            hour_label = f'{str(hour).zfill(2)}:00'
+            # Si hay datos en esa área y hora
+            if any(area_hourly_emotions[area][hour_label][emotion] > 0 for emotion in all_emotions):
+                labels_with_data.append(f'{area} - {hour_label}')
+
+    # Crear datasets para el gráfico por áreas (con emociones)
+    area_datasets = []
+    colors = [
+        'rgba(75, 192, 192, 0.75)',  # #4bc0c0
+        'rgba(0, 123, 255, 0.75)',   # #007bff
+        'rgba(255, 131, 0, 0.75)',   # #FF8300
+        'rgba(255, 87, 51, 0.75)',   # #FF5733
+        'rgba(199, 0, 57, 0.75)',    # #C70039
+        'rgba(144, 12, 63, 0.75)',   # #900C3F
+        'rgba(88, 24, 69, 0.75)'     # #581845
+    ]
+
+    # Crear un dataset para cada emoción
+    for i, emotion in enumerate(all_emotions):
+        emotion_data = []
+        for area in sorted(all_areas):
+            for hour in range(24):
+                hour_label = f'{str(hour).zfill(2)}:00'
+                if f'{area} - {hour_label}' in labels_with_data:
+                    emotion_data.append(area_hourly_emotions[area][hour_label][emotion])
+
+        area_datasets.append({
+            'label': _(emotion),
+            'data': emotion_data,
+            'fill': 'false',
+            'borderColor': colors[i % len(colors)].replace('0.75', '1'),
+            'backgroundColor': colors[i % len(colors)],
+            'borderWidth': 1,
+        })
+
+    # Empaquetar los datos para el gráfico por áreas
+    data = {
+        'labels': labels_with_data,  # Etiquetas con área y hora
+        'datasets': area_datasets    # Datos de emociones por área y hora
+    }
+
+    return JsonResponse(data)
+'''
+
+
+def get_worker_area_chart_data(request):
+    data = json.loads(request.body)
+    worker_area_id = data["worker_area"]
+    start_date = data["start_date"]
+    end_date = data["end_date"]
+
+    object_list = EmotionAnalysis.objects.filter(
+        recorded_at__date__range=(start_date, end_date)
+    )
+
+    # Si se ha proporcionado un área específica, filtrar por ella
+    if worker_area_id and worker_area_id != '0':
+        object_list = object_list.filter(profile__worker_area__id=worker_area_id)
+
+    # Inicializar las estructuras de datos
+    area_hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    all_areas = set()
+    all_emotions = set()
+
+    if object_list.exists():
+        # Obtener las emociones detectadas y las áreas de trabajo
+        all_emotions = object_list.first().emotions_detected.get('emotions', {}).keys()
+        all_areas = {obj.profile.worker_area.name for obj in object_list if obj.profile.worker_area}
+
+    # Inicializar los datos para todas las combinaciones de áreas y horas
+    for area in all_areas:
+        for hour in range(24):
+            hour_label = f'{str(hour).zfill(2)}:00-{str(hour).zfill(2)}:59'  # Formato [HH:00-HH:59]
+            for emotion in all_emotions:
+                area_hourly_emotions[area][hour_label][emotion] = 0
+
+    # Procesar los datos de los objetos obtenidos
+    for obj in object_list:
+        if obj.profile.worker_area:
+            area = obj.profile.worker_area.name
+            recorded_at = localtime(obj.recorded_at)  # Convertir a hora local
+            hour = recorded_at.strftime('%H:00-%H:59')  # Ajustar el formato [HH:00-HH:59]
+            dominant_emotion = obj.emotions_detected['dominant_emotion']
+
+            # Actualizar los datos por área y hora
+            area_hourly_emotions[area][hour][dominant_emotion] += 1
+
+    # Crear etiquetas combinadas de área y hora con el nuevo formato
+    labels_with_data = []
+    for area in sorted(all_areas):
+        for hour in range(24):
+            hour_label = f'{str(hour).zfill(2)}:00-{str(hour).zfill(2)}:59'
+            # Si hay datos en esa área y hora
+            if any(area_hourly_emotions[area][hour_label][emotion] > 0 for emotion in all_emotions):
+                labels_with_data.append(f'{area} - [{hour_label}]')  # Agregar corchetes [HH:00-HH:59]
+
+    # Crear datasets para el gráfico por áreas (con emociones)
+    area_datasets = []
+    colors = [
+        'rgba(75, 192, 192, 0.75)',  # #4bc0c0
+        'rgba(0, 123, 255, 0.75)',   # #007bff
+        'rgba(255, 131, 0, 0.75)',   # #FF8300
+        'rgba(255, 87, 51, 0.75)',   # #FF5733
+        'rgba(199, 0, 57, 0.75)',    # #C70039
+        'rgba(144, 12, 63, 0.75)',   # #900C3F
+        'rgba(88, 24, 69, 0.75)'     # #581845
+    ]
+
+    # Crear un dataset para cada emoción
+    for i, emotion in enumerate(all_emotions):
+        emotion_data = []
+        for area in sorted(all_areas):
+            for hour in range(24):
+                hour_label = f'{str(hour).zfill(2)}:00-{str(hour).zfill(2)}:59'  # Usar el formato [HH:00-HH:59]
+                if f'{area} - [{hour_label}]' in labels_with_data:
+                    emotion_data.append(area_hourly_emotions[area][hour_label][emotion])
+
+        area_datasets.append({
+            'label': _(emotion),
+            'data': emotion_data,
+            'fill': 'false',
+            'borderColor': colors[i % len(colors)].replace('0.75', '1'),
+            'backgroundColor': colors[i % len(colors)],
+            'borderWidth': 1,
+        })
+
+    # Empaquetar los datos para el gráfico por áreas
+    data = {
+        'labels': labels_with_data,  # Etiquetas con área y hora [HH:00-HH:59]
+        'datasets': area_datasets    # Datos de emociones por área y hora
+    }
+
+    return JsonResponse(data)
 
 
 def get_work_shift_emotions(request):
@@ -850,7 +1043,8 @@ def get_work_shift_emotions(request):
 
         for obj in object_list:
             work_shift = str(obj.profile.work_shift)
-            recorded_at = obj.recorded_at
+            # recorded_at = obj.recorded_at
+            recorded_at = localtime(obj.recorded_at)  # Convertir a hora local
             date = recorded_at.strftime('%Y-%m-%d')
             hour = recorded_at.strftime('%H:00')
             dominant_emotion = obj.emotions_detected['dominant_emotion']
@@ -878,6 +1072,388 @@ def get_work_shift_emotions(request):
         }, status=500)
 
 
+'''
+def get_work_shift_chart_data(request):
+    data = json.loads(request.body)
+    work_shift_id = data["work_shift"]
+    start_date = data["start_date"]
+    end_date = data["end_date"]
+
+    # Obtener los registros de emociones dentro del rango de fechas
+    object_list = EmotionAnalysis.objects.filter(
+        recorded_at__date__range=(start_date, end_date))
+
+    # Si se ha proporcionado un turno de trabajo específico, filtrar por él
+    if work_shift_id and work_shift_id != '0':
+        try:
+            work_shift = WorkShift.objects.get(id=work_shift_id)
+            print(f"Work Shift ID: {work_shift_id}, Start: {work_shift.start_time}, End: {work_shift.end_time}")
+        except WorkShift.DoesNotExist:
+            return JsonResponse({'error': 'Turno de trabajo no válido.'}, status=400)
+
+        shift_start = work_shift.start_time
+        shift_end = work_shift.end_time
+
+        # Verificar si el turno cruza la medianoche o no
+        if shift_start > shift_end:
+            print(f"Turno cruza la medianoche: {work_shift.name}")
+            object_list = object_list.filter(
+                Q(recorded_at__time__gte=shift_start) |
+                Q(recorded_at__time__lt=shift_end),
+                profile__work_shift=work_shift
+            )
+        else:
+            print(f"Turno no cruza la medianoche: {work_shift.name}")
+            object_list = object_list.filter(
+                recorded_at__time__range=(shift_start, shift_end),
+                profile__work_shift=work_shift
+            )
+
+        # Verificar cuántos registros se obtienen después de aplicar el filtro
+        print(f"Registros después de aplicar el filtro para el turno {work_shift.name}: {object_list.count()}")
+
+    # Si no se especifica un turno o se seleccionan todos los turnos (work_shift_id = 0)
+    print(f"Total de registros obtenidos: {object_list.count()}")
+
+    # Inicializar las estructuras de datos
+    work_shift_hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    all_work_shifts = set()
+    all_emotions = set()
+
+    if object_list.exists():
+        # Obtener las emociones detectadas y los turnos de trabajo
+        all_emotions = object_list.first().emotions_detected.get('emotions', {}).keys()
+        all_work_shifts = {obj.profile.work_shift.name for obj in object_list if obj.profile.work_shift}
+
+    # Inicializar los datos para todas las combinaciones de turnos y horas
+    for shift in all_work_shifts:
+        for hour in range(24):
+            hour_label = f'{str(hour).zfill(2)}:00'
+            for emotion in all_emotions:
+                work_shift_hourly_emotions[shift][hour_label][emotion] = 0
+
+    # Procesar los datos de los objetos obtenidos
+    for obj in object_list:
+        if obj.profile.work_shift:
+            shift = obj.profile.work_shift.name
+            recorded_at = obj.recorded_at
+            hour = recorded_at.strftime('%H:00')
+            dominant_emotion = obj.emotions_detected['dominant_emotion']
+
+            # Actualizar los datos por turno y hora
+            work_shift_hourly_emotions[shift][hour][dominant_emotion] += 1
+
+    # Crear etiquetas combinadas de turno y hora
+    labels_with_data = []
+    for shift in sorted(all_work_shifts):
+        for hour in range(24):
+            hour_label = f'{str(hour).zfill(2)}:00'
+            # Si hay datos en ese turno y hora
+            if any(work_shift_hourly_emotions[shift][hour_label][emotion] > 0 for emotion in all_emotions):
+                labels_with_data.append(f'{shift} - {hour_label}')
+
+    # Crear datasets para el gráfico por turnos (con emociones)
+    work_shift_datasets = []
+    colors = [
+        'rgba(75, 192, 192, 0.75)',  # #4bc0c0
+        'rgba(0, 123, 255, 0.75)',   # #007bff
+        'rgba(255, 131, 0, 0.75)',   # #FF8300
+        'rgba(255, 87, 51, 0.75)',   # #FF5733
+        'rgba(199, 0, 57, 0.75)',    # #C70039
+        'rgba(144, 12, 63, 0.75)',   # #900C3F
+        'rgba(88, 24, 69, 0.75)'     # #581845
+    ]
+
+    # Crear un dataset para cada emoción
+    for i, emotion in enumerate(all_emotions):
+        emotion_data = []
+        for shift in sorted(all_work_shifts):
+            for hour in range(24):
+                hour_label = f'{str(hour).zfill(2)}:00'
+                if f'{shift} - {hour_label}' in labels_with_data:
+                    emotion_data.append(work_shift_hourly_emotions[shift][hour_label][emotion])
+
+        work_shift_datasets.append({
+            'label': emotion,
+            'data': emotion_data,
+            'fill': 'false',
+            'borderColor': colors[i % len(colors)].replace('0.75', '1'),
+            'backgroundColor': colors[i % len(colors)],
+            'borderWidth': 1,
+        })
+
+    # Empaquetar los datos para el gráfico por turnos
+    data = {
+        'labels': labels_with_data,  # Etiquetas con turno y hora
+        'datasets': work_shift_datasets  # Datos de emociones por turno y hora
+    }
+
+    return JsonResponse(data)
+'''
+
+
+# función perfecta coincide con las horas de la base de datos
+def get_work_shift_chart_data(request):
+    data = json.loads(request.body)
+    work_shift_id = data["work_shift"]
+    start_date = data["start_date"]
+    end_date = data["end_date"]
+
+    # Obtener los registros de emociones dentro del rango de fechas
+    object_list = EmotionAnalysis.objects.filter(
+        recorded_at__date__range=(start_date, end_date))
+
+    # Si se ha proporcionado un turno de trabajo específico, filtrar por él
+    if work_shift_id and work_shift_id != '0':
+        try:
+            work_shift = WorkShift.objects.get(id=work_shift_id)
+            shift_start = work_shift.start_time
+            shift_end = work_shift.end_time
+        except WorkShift.DoesNotExist:
+            return JsonResponse({'error': 'Turno de trabajo no válido.'}, status=400)
+
+        # Verificar si el turno cruza la medianoche o no
+        if shift_start > shift_end:
+            object_list = object_list.filter(
+                Q(recorded_at__time__gte=shift_start) |
+                Q(recorded_at__time__lt=shift_end),
+                profile__work_shift=work_shift
+            )
+        else:
+            object_list = object_list.filter(
+                recorded_at__time__range=(shift_start, shift_end),
+                profile__work_shift=work_shift
+            )
+
+    # Inicializar las estructuras de datos
+    work_shift_hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    all_work_shifts = set()
+    all_emotions = set()
+
+    if object_list.exists():
+        all_emotions = object_list.first().emotions_detected.get('emotions', {}).keys()
+        all_work_shifts = {obj.profile.work_shift.name for obj in object_list if obj.profile.work_shift}
+
+    # Ajustar horas y agruparlas por rangos de 1 hora
+    for obj in object_list:
+        if obj.profile.work_shift:
+            shift = obj.profile.work_shift.name
+
+            # Convertir a la hora local si es necesario
+            recorded_at = localtime(obj.recorded_at)
+
+            # Agrupar por la hora completa (ej. 08:00-08:59)
+            hour = f"{recorded_at.hour:02}:00"
+
+            dominant_emotion = obj.emotions_detected['dominant_emotion']
+
+            # Actualizar los datos por turno y hora
+            work_shift_hourly_emotions[shift][hour][dominant_emotion] += 1
+
+    # Crear etiquetas combinadas de turno y hora
+    labels_with_data = []
+    for shift in sorted(all_work_shifts):
+        for hour in range(24):
+            # hour_label = f'{str(hour).zfill(2)}:00'
+            # if any(work_shift_hourly_emotions[shift][hour_label][emotion] > 0 for emotion in all_emotions):
+            #    labels_with_data.append(f'{shift} - {hour_label}')
+
+            # HORAS CON INTERVALO COMPLETO
+            hour_label = f'{str(hour).zfill(2)}:00-{str(hour).zfill(2)}:59'  # Modificamos para mostrar el rango de horas
+            # Si hay datos en ese turno y hora
+            if any(work_shift_hourly_emotions[shift][f'{str(hour).zfill(2)}:00'][emotion] > 0 for emotion in all_emotions):
+                labels_with_data.append(f'{shift} - [{hour_label}]')  # Añadimos los corchetes para el formato [HH:00-HH:59]
+
+    # Crear datasets para el gráfico por turnos (con emociones)
+    work_shift_datasets = []
+    colors = [
+        'rgba(75, 192, 192, 0.75)',  # #4bc0c0
+        'rgba(0, 123, 255, 0.75)',   # #007bff
+        'rgba(255, 131, 0, 0.75)',   # #FF8300
+        'rgba(255, 87, 51, 0.75)',   # #FF5733
+        'rgba(199, 0, 57, 0.75)',    # #C70039
+        'rgba(144, 12, 63, 0.75)',   # #900C3F
+        'rgba(88, 24, 69, 0.75)'     # #581845
+    ]
+
+    for i, emotion in enumerate(all_emotions):
+        emotion_data = []
+        for shift in sorted(all_work_shifts):
+            for hour in range(24):
+                hour_label = f'{str(hour).zfill(2)}:00'
+                # if f'{shift} - {hour_label}' in labels_with_data:
+                #    emotion_data.append(work_shift_hourly_emotions[shift][hour_label][emotion])
+                
+                # Generar el rango horario [HH:00-HH:59]
+                hour_label = f'{str(hour).zfill(2)}:00-{str(hour).zfill(2)}:59'
+                # Verificar si la etiqueta con formato [shift - [HH:00-HH:59]] existe en labels_with_data
+                if f'{shift} - [{hour_label}]' in labels_with_data:
+                    emotion_data.append(work_shift_hourly_emotions[shift][f'{str(hour).zfill(2)}:00'][emotion])
+
+        work_shift_datasets.append({
+            'label': emotion,
+            'data': emotion_data,
+            'fill': 'false',
+            'borderColor': colors[i % len(colors)].replace('0.75', '1'),
+            'backgroundColor': colors[i % len(colors)],
+            'borderWidth': 1,
+        })
+
+    # Empaquetar los datos para el gráfico por turnos
+    data = {
+        'labels': labels_with_data,  # Etiquetas con turno y hora
+        'datasets': work_shift_datasets  # Datos de emociones por turno y hora
+    }
+
+    return JsonResponse(data)
+
+
+def get_hour_chart_data(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        start_date_time = data.get('start_date_time')
+        end_date_time = data.get('end_date_time')
+
+        # Obtener los datos filtrados por el rango de fecha y hora
+        object_list = EmotionAnalysis.objects.filter(
+            recorded_at__range=(start_date_time, end_date_time)
+        )
+
+        # Inicializar las estructuras de datos
+        hourly_emotions_by_date = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+        all_emotions = set()
+
+        if object_list.exists():
+            all_emotions = object_list.first().emotions_detected.get('emotions', {}).keys()
+
+        # Procesar los datos de los objetos obtenidos
+        for obj in object_list:
+            recorded_at = localtime(obj.recorded_at)  # Convertir a hora local
+            date_label = recorded_at.strftime('%Y-%m-%d')
+            hour_label = recorded_at.strftime('%H:00-%H:59')
+            dominant_emotion = obj.emotions_detected['dominant_emotion']
+
+            # Actualizar los datos por fecha y hora
+            hourly_emotions_by_date[date_label][hour_label][dominant_emotion] += 1
+
+        # Crear etiquetas combinadas de fecha y hora
+        labels_with_data = []
+        for date in sorted(hourly_emotions_by_date.keys()):
+            for hour in sorted(hourly_emotions_by_date[date].keys()):
+                labels_with_data.append(f'{date} - [{hour}]')
+
+        # Crear datasets para el gráfico por emociones
+        datasets = []
+        colors = [
+            'rgba(75, 192, 192, 0.75)',  # #4bc0c0
+            'rgba(0, 123, 255, 0.75)',   # #007bff
+            'rgba(255, 131, 0, 0.75)',   # #FF8300
+            'rgba(255, 87, 51, 0.75)',   # #FF5733
+            'rgba(199, 0, 57, 0.75)',    # #C70039
+            'rgba(144, 12, 63, 0.75)',   # #900C3F
+            'rgba(88, 24, 69, 0.75)'     # #581845
+        ]
+
+        for i, emotion in enumerate(all_emotions):
+            emotion_data = []
+            for date in sorted(hourly_emotions_by_date.keys()):
+                for hour in sorted(hourly_emotions_by_date[date].keys()):
+                    emotion_data.append(hourly_emotions_by_date[date][hour].get(emotion, 0))
+
+            datasets.append({
+                'label': emotion,
+                'data': emotion_data,
+                'fill': 'false',
+                'borderColor': colors[i % len(colors)].replace('0.75', '1'),
+                'backgroundColor': colors[i % len(colors)],
+                'borderWidth': 1,
+            })
+
+        # Empaquetar los datos para el gráfico
+        data = {
+            'labels': labels_with_data,  # Etiquetas con fecha y hora
+            'datasets': datasets         # Datos de emociones por fecha y hora
+        }
+
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+def get_employee_chart_data(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user_id = data["employee"]
+        start_date = data["start_date"]
+        end_date = data["end_date"]
+
+        # Filtrar los datos por perfil del empleado (que está relacionado con el modelo User)
+        object_list = EmotionAnalysis.objects.filter(
+            profile__user_id=user_id,  # Filtrar por la lista de empleados a través del perfil
+            recorded_at__range=(start_date, end_date)  # Filtrar por rango de fecha y hora
+        )
+
+        # Inicializar las estructuras de datos
+        hourly_emotions_by_date = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+        all_emotions = set()
+
+        if object_list.exists():
+            all_emotions = object_list.first().emotions_detected.get('emotions', {}).keys()
+
+        # Procesar los datos de los objetos obtenidos
+        for obj in object_list:
+            recorded_at = localtime(obj.recorded_at)  # Convertir a hora local
+            date_label = recorded_at.strftime('%Y-%m-%d')
+            hour_label = recorded_at.strftime('%H:00-%H:59')
+            dominant_emotion = obj.emotions_detected['dominant_emotion']
+
+            # Actualizar los datos por fecha y hora
+            hourly_emotions_by_date[date_label][hour_label][dominant_emotion] += 1
+
+        # Crear etiquetas combinadas de fecha y hora
+        labels_with_data = []
+        for date in sorted(hourly_emotions_by_date.keys()):
+            for hour in sorted(hourly_emotions_by_date[date].keys()):
+                labels_with_data.append(f'{date} - {hour}')
+
+        # Crear datasets para el gráfico por emociones
+        datasets = []
+        colors = [
+            'rgba(75, 192, 192, 0.75)',  # #4bc0c0
+            'rgba(0, 123, 255, 0.75)',   # #007bff
+            'rgba(255, 131, 0, 0.75)',   # #FF8300
+            'rgba(255, 87, 51, 0.75)',   # #FF5733
+            'rgba(199, 0, 57, 0.75)',    # #C70039
+            'rgba(144, 12, 63, 0.75)',   # #900C3F
+            'rgba(88, 24, 69, 0.75)'     # #581845
+        ]
+
+        for i, emotion in enumerate(all_emotions):
+            emotion_data = []
+            for date in sorted(hourly_emotions_by_date.keys()):
+                for hour in sorted(hourly_emotions_by_date[date].keys()):
+                    emotion_data.append(hourly_emotions_by_date[date][hour].get(emotion, 0))
+
+            datasets.append({
+                'label': emotion,
+                'data': emotion_data,
+                'fill': 'false',
+                'borderColor': colors[i % len(colors)].replace('0.75', '1'),
+                'backgroundColor': colors[i % len(colors)],
+                'borderWidth': 1,
+            })
+
+        # Empaquetar los datos para el gráfico
+        data = {
+            'labels': labels_with_data,  # Etiquetas con fecha y hora
+            'datasets': datasets         # Datos de emociones por fecha y hora
+        }
+
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
 def get_hourly_emotions(request):
     """Devuelve lista de emociones por horas trabajo."""
     data = json.loads(request.body)
@@ -902,7 +1478,8 @@ def get_hourly_emotions(request):
         hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
 
         for obj in object_list:
-            recorded_at = obj.recorded_at
+            # recorded_at = obj.recorded_at
+            recorded_at = localtime(obj.recorded_at)  # Convertir a hora local
             date = recorded_at.strftime('%Y-%m-%d')
             hour = recorded_at.strftime('%H:00')
             dominant_emotion = obj.emotions_detected['dominant_emotion']
@@ -931,21 +1508,21 @@ def get_hourly_emotions(request):
 def get_employee_hourly_emotions(request):
     """Devuelve lista de emociones de cada empleado por horas."""
     data = json.loads(request.body)
-    empoyee_list = data["empoyee_list"]
+    user_id = data["employee"]
     start_date = data["start_date"]
     end_date = data["end_date"]
 
     print("\n-> Parametros recibidos")
-    print("empoyee list = %s" % empoyee_list)
+    print("empoyee = %s" % user_id)
     print("start_date = %s" % start_date)  # 2024-09-06
     print("end_date = %s" % end_date)  # 2024-09-06
     print("\n")
 
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
     if is_ajax:
-        print(f"\n=>Filtro empleados {empoyee_list}")
+        print(f"\n=>Filtro empleado {user_id}")
         object_list = EmotionAnalysis.objects.filter(
-            profile__user_id__in=empoyee_list,
+            profile__user_id=user_id,  # Filtrar por la lista de empleados a través del perfil
             recorded_at__range=(start_date, end_date)
         ).order_by('profile__user__username', 'recorded_at')
 
@@ -954,7 +1531,8 @@ def get_employee_hourly_emotions(request):
 
         for obj in object_list:
             employee = str(obj.profile.user.username)
-            recorded_at = obj.recorded_at
+            # recorded_at = obj.recorded_at
+            recorded_at = localtime(obj.recorded_at)  # Convertir a hora local
             date = recorded_at.strftime('%Y-%m-%d')
             hour = recorded_at.strftime('%H:00')
             dominant_emotion = obj.emotions_detected['dominant_emotion']
@@ -979,3 +1557,45 @@ def get_employee_hourly_emotions(request):
             'status': _("Failure"),
             'message': _("Incorrect request"),
         }, status=500)
+
+
+class MeListView(ListView):
+    """Devuelve lista de videos del usuario."""
+
+    template_name = 'employee/member/me_video_list.html'
+
+    def get_queryset(self):
+        profile = self.request.user.profile
+
+        video_list = EmotionAnalysis.objects.filter(
+            profile=profile).order_by('recorded_at')
+        return video_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["segment"] = 'me'
+        return context
+
+
+def charts(request):
+    """Vita de gráficos personalizados."""
+    current_date = datetime.now().date()
+    # Obtener la fecha y hora actual
+    now = datetime.now()
+    
+    # Ajustar la hora a las 00:00
+    start_of_day = datetime(now.year, now.month, now.day)
+
+    worker_area_list = WorkerArea.objects.all().values('id', 'name').order_by('name')
+    work_shift_list = WorkShift.objects.all().values('id', 'name').order_by('name')
+
+    context = {
+        'segment': 'charts',
+        'worker_area_list': worker_area_list,
+        'current_date': current_date.strftime('%Y-%m-%d'),
+        'work_shift_list': work_shift_list,
+        'start_date_time': start_of_day.strftime("%Y-%m-%d %H:%M"),
+        'end_date_time': datetime.now().strftime("%Y-%m-%d %H:%M"),
+    }
+
+    return render(request, 'employee/charts/charts_list.html', context)

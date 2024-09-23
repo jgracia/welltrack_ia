@@ -114,3 +114,30 @@ git push -u origin main
 
 # verificar cambios en remoto
 git remote -v
+
+
+# Actualizar el repositorio con nuevos cambios
+- chequear rama main
+git checkout main
+
+- agrega tus cambios locales
+git add .
+
+- realiza un commit con una descripción de los cambios
+git commit -m "Diseño y funcionalidad de dashboard"
+
+- empuja tus cambios al repositorio remoto
+git push origin main
+
+# CLAVE GENERICA USUARIOS
+WelltrackIA.2024
+
+# INSTALAR PAQUETE PARA EXTRARE METADATOS
+sudo apt-get install ffmpeg
+
+# AJUSTAR LA HORA DEL SISTEMA
+sudo ntpdate time.windows.com
+
+# VER LA HORA
+date
+

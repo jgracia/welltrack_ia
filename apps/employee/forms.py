@@ -199,12 +199,15 @@ class EmotionAnalysisForm(forms.ModelForm):
 
     class Meta:
         model = EmotionAnalysis
-        exclude = ['analyzed_at', 'emotions_detected', 'created_at', 'updated_at', 'created_by', 'updated_by']
+        exclude = [
+            'analyzed_at', 
+            'emotions_detected', 
+            'created_at', 'updated_at', 'created_by', 'updated_by']
 
         labels = {
             'profile': _('Profile'),
             'video_file': _('Video file'),
-            'recorded_at': _('Recording date and time')
+            # 'recorded_at': _('Recording date and time')
         }
 
         widgets = {
