@@ -238,3 +238,47 @@ class EmotionAnalysisForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
+
+
+class EmotionAnalysisMeForm(forms.ModelForm):
+
+    class Meta:
+        model = EmotionAnalysis
+        exclude = [
+            'profile', 'analyzed_at', 'video_file',
+            'emotions_detected', 
+            'created_at', 'updated_at', 'created_by', 'updated_by']
+
+        labels = {
+            'video_file': _('Video file'),
+            # 'recorded_at': _('Recording date and time')
+        }
+
+        widgets = {
+            'recorded_at': forms.DateTimeInput(
+                attrs={
+                    'type': 'datetime-local',  # HTML5 input type
+                    'class': 'form-control datetimepicker',
+                    'placeholder': _('Select date and time')
+                }
+            ),
+            'video_file': forms.FileInput(
+                attrs={
+                    'accept': 'video/*',  # Allows only video formats
+                    'class': 'form-control'
+                }
+            )
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['recorded_at'].widget = forms.DateTimeInput(
+            format='%Y-%m-%dT%H:%M',
+            attrs={'type': 'datetime-local'}
+        )
+        
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })

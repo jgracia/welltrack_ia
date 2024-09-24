@@ -89,4 +89,6 @@ urlpatterns = [
 
     # rutas del usuario normal
     path('me', login_required(views.MeListView.as_view()), name="me"),
+    path('me/video/new/', login_required(views.MeVideoNew.as_view()),
+         name='me_video_new'),
 ]

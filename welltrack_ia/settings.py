@@ -178,3 +178,6 @@ LOGIN_REDIRECT_URL = '/'
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+# Aumenta el tamaño máximo permitido para la carga de datos
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB, ajusta este valor según tus necesidades

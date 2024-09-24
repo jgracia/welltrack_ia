@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-23 00:28-0500\n"
-"PO-Revision-Date: 2024-09-23 00:29-0500\n"
+"POT-Creation-Date: 2024-09-24 08:38-0500\n"
+"PO-Revision-Date: 2024-09-24 09:45-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -19,57 +19,57 @@ msgstr ""
 "1 : 2;\n"
 "X-Generator: Poedit 2.4.3\n"
 
-#: apps/api/views.py:114
+#: apps/api/views.py:116
 msgid "January"
 msgstr ""
 
-#: apps/api/views.py:115
+#: apps/api/views.py:117
 msgid "February"
 msgstr ""
 
-#: apps/api/views.py:116
+#: apps/api/views.py:118
 #, fuzzy
 #| msgid "Search"
 msgid "March"
 msgstr "Buscar"
 
-#: apps/api/views.py:117
+#: apps/api/views.py:119
 msgid "April"
 msgstr ""
 
-#: apps/api/views.py:118
+#: apps/api/views.py:120
 msgid "May"
 msgstr ""
 
-#: apps/api/views.py:119
+#: apps/api/views.py:121
 msgid "June"
 msgstr ""
 
-#: apps/api/views.py:120
+#: apps/api/views.py:122
 msgid "July"
 msgstr ""
 
-#: apps/api/views.py:121
+#: apps/api/views.py:123
 #, fuzzy
 #| msgid "disgust"
 msgid "August"
 msgstr "disgusto"
 
-#: apps/api/views.py:122
+#: apps/api/views.py:124
 #, fuzzy
 #| msgid "Remember me"
 msgid "September"
 msgstr "Recordarme"
 
-#: apps/api/views.py:123
+#: apps/api/views.py:125
 msgid "October"
 msgstr ""
 
-#: apps/api/views.py:124
+#: apps/api/views.py:126
 msgid "November"
 msgstr ""
 
-#: apps/api/views.py:125
+#: apps/api/views.py:127
 #, fuzzy
 #| msgid "Remember me"
 msgid "December"
@@ -737,7 +737,7 @@ msgstr "Hora de inicio"
 #: apps/employee/templates/employee/member/me_video_list.html:107
 #: apps/employee/templates/employee/video/video_list.html:134
 msgid "New video"
-msgstr ""
+msgstr "Nuevo video"
 
 #: apps/employee/templates/employee/profile.html:205
 msgid "Yes,No"
@@ -908,7 +908,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: apps/home/templates/home/index - v1.html:11
-#: apps/home/templates/home/index.html:334
+#: apps/home/templates/home/index.html:337
 msgid "Emotions of the current year, until the current month"
 msgstr "Emociones del presente año, hasta el mes en curso"
 
@@ -976,7 +976,7 @@ msgstr "Gráfico general de emociones por día"
 msgid "Filters for graphics"
 msgstr "Filtros para gráficos"
 
-#: apps/home/templates/home/index.html:320
+#: apps/home/templates/home/index.html:321
 msgid "Emotions in the current day"
 msgstr "Emociones en el día actual"
 

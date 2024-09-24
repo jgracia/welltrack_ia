@@ -1,3 +1,5 @@
+import base64
+from django.core.files.base import ContentFile
 from django.db.models import Q
 from django.utils import timezone
 from django.shortcuts import render, redirect
@@ -27,7 +29,8 @@ from .forms import (
     SignUpForm,
     UpdateProfileForm,
     UpdateUserForm,
-    EmotionAnalysisForm
+    EmotionAnalysisForm,
+    EmotionAnalysisMeForm
 )
 
 # paquetes para el algoritmo
@@ -1566,15 +1569,76 @@ class MeListView(ListView):
 
     def get_queryset(self):
         profile = self.request.user.profile
+        now = timezone.now()
+        current_month = now.month
+        current_year = now.year
 
         video_list = EmotionAnalysis.objects.filter(
-            profile=profile).order_by('recorded_at')
+            profile=profile,
+            recorded_at__year=current_year,
+            recorded_at__month=current_month
+        ).order_by('recorded_at')
         return video_list
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["segment"] = 'me'
         return context
+
+
+class MeVideoNew(SuccessMessageMixin, MixinFormInvalid, CreateView):
+    """Función para subir video grabado por usuario."""
+
+    model = EmotionAnalysis
+    template_name = "employee/member/me_video_form.html"
+    context_object_name = "obj"
+    form_class = EmotionAnalysisMeForm
+    success_url = reverse_lazy("employee:me")
+    success_message = _("Success: The new video was created successfully.")
+
+    def form_valid(self, form):
+        try:
+            profile = self.request.user.profile
+            form.instance.profile = profile
+
+            # Procesar el video grabado (video_data)
+            video_data = self.request.POST.get('video_data')
+            if video_data:
+                # Decodificar el video base64 y guardarlo como archivo
+                format, video_str = video_data.split(';base64,')
+                ext = format.split('/')[-1]  # Obtener la extensión del archivo (por ejemplo, mp4)
+                video_file_name = f"recorded_video_{self.request.user.username}.{ext}"
+                
+                # Guardar el archivo en el campo `video_file`
+                form.instance.video_file.save(
+                    video_file_name,
+                    ContentFile(base64.b64decode(video_str))
+                )
+
+            # Continuar con el guardado de otros campos
+            response = super().form_valid(form)
+
+            # Añadir el mensaje de éxito
+            messages.add_message(self.request, messages.INFO, 
+                                 _("Successfully submitted data"))
+
+            # Verificar si es una solicitud AJAX
+            is_ajax = self.request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+            if is_ajax:
+                data = {
+                    'success': True,
+                    'message': _("Successfully submitted data"),
+                    'pk': form.instance.pk,
+                }
+                return JsonResponse(data)
+            else:
+                return response
+
+        except Exception as e:
+            return JsonResponse({
+                'status': HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                'message': str(e),
+            }, status=500)
 
 
 def charts(request):

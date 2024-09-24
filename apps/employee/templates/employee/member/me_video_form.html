@@ -1,0 +1,225 @@
+{% load widget_tweaks %}
+{% load static %}
+
+<!-- Modal -->
+<div class="modal-dialog">
+  <div class="modal-content">
+    <form role="form" action="{% url 'employee:me_video_new' %}" method="post" enctype="multipart/form-data" autocomplete="off">
+      {% csrf_token %}
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="extraModalLabel">
+          {{ _("Upload video") }}
+        </h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        {# Renderizar cualquier otro campo que necesites #}
+          <div class="row">
+            <div class="col-6">
+              {{ form.work_modality.label_tag }}
+              {{ form.work_modality }}
+            </div>
+            <div class="col-6">
+              {{ form.recorded_at.label_tag }}
+              {{ form.recorded_at }}
+            </div>
+          </div>
+
+        <div class="row">
+          <div class="form-group mt-3">
+            <label for="video">{{ _("Recorded Video") }}</label>
+            <video id="video" width="100%" height="auto" autoplay muted></video>
+            <button type="button" id="startButton" class="btn btn-primary">{{ _("Start Recording") }}</button>
+            <button type="button" id="stopButton" class="btn btn-danger" disabled>{{ _("Stop Recording") }}</button>
+            <input type="hidden" name="video_data" id="video_data">
+            
+          </div>
+        </div>
+        <div class="text-center text-muted mt-3 fw-bold"><b style="color: #dc3545;">*</b> {{ _("Required fields") }}</div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save fa-lg me-2"></i>{{ _("Save") }}</button>
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">{{ _("Close") }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript">
+  let mediaRecorder;
+  let recordedBlobs;
+
+  const video = document.getElementById('video');
+  const startButton = document.getElementById('startButton');
+  const stopButton = document.getElementById('stopButton');
+  const submitButton = document.querySelector('button[type="submit"]'); // El botón submit del formulario
+  const videoDataInput = document.getElementById('video_data');
+
+  // Función para manejar la cámara y mostrar el video
+  async function startCamera() {
+    try {
+      //const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      /*const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { width: 640, height: 480 }  // Reducir resolución para archivos más pequeños
+      });*/
+      
+      // Solicitar acceso tanto al video como al audio
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 480 },  // Reducir resolución para archivos más pequeños
+        audio: true  // Incluir audio en la grabación
+      });
+      video.srcObject = stream;
+      recordedBlobs = [];
+      mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          recordedBlobs.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+
+        // Verificar tamaño del archivo antes de enviar
+        const fileSizeInMB = blob.size / (1024 * 1024);  // Tamaño en MB
+        console.log(`Tamaño del archivo grabado: ${fileSizeInMB.toFixed(2)} MB`);
+
+        if (fileSizeInMB > 50) {
+          alert('El archivo de video supera los 50 MB. Por favor, graba un video más corto o con menor resolución.');
+          return;  // Cancelar el envío si el archivo es demasiado grande
+        }
+
+        const url = window.URL.createObjectURL(blob);
+        video.srcObject = null;  // Para que deje de mostrar el stream en vivo
+        video.src = url;  // Muestra el video grabado
+
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          videoDataInput.value = reader.result;  // Convierte el video a base64 y lo coloca en el input hidden
+
+          // Habilitar el botón de submit
+          submitButton.disabled = false;
+        };
+
+        // Apagar la cámara
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      startButton.disabled = true;
+      stopButton.disabled = false;
+      submitButton.disabled = true;  // Deshabilitar el botón submit durante la grabación
+
+      setTimeout(() => {
+        mediaRecorder.stop();
+      }, 10000);  // Detener la grabación después de 10 segundos
+    } catch (err) {
+      console.error('Error al acceder a la cámara: ', err);
+      alert('Error al acceder a la cámara. Asegúrate de haber concedido los permisos.');
+    }
+  }
+
+  // Event listeners para los botones
+  startButton.addEventListener('click', startCamera);
+
+  stopButton.addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+      startButton.disabled = false;
+      stopButton.disabled = true;
+    }
+  });
+
+  // Manejar el envío del formulario con fetch y actualización de progreso
+  jQuery("form").submit(function(event) {
+    event.preventDefault();
+
+    var url = this.action;
+    var formData = new FormData(event.currentTarget);
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData,
+    }).then(response => {
+      if (response.ok) {
+        return response.json().then(json => {
+          closeModal();
+
+          let videoId = json.pk;
+          // Mostrar la ventana modal con la barra de progreso
+          var progressModal = new mdb.Modal(document.getElementById('progressModal'));
+          progressModal.show();
+
+          var progressBar = document.getElementById('progressBar');
+          var progressText = document.getElementById('progressText');
+
+          let updateProgress = function(value, text) {
+            progressBar.style.width = value + '%';
+            progressBar.setAttribute('aria-valuenow', value);
+            progressText.innerText = text;
+          };
+
+          function checkTaskStatus(task_id) {
+            fetch(`analyze_video/task-status/${task_id}/`)
+              .then(response => response.json())
+              .then(data => {
+                if (data.state === 'PROGRESS') {
+                  updateProgress(data.result.percent, `Progreso: ${data.result.percent}%`);
+                  setTimeout(() => checkTaskStatus(task_id), 500);
+                } else if (data.state === 'SUCCESS') {
+                  updateProgress(100, "Finalizando...");
+                  progressModal.hide();
+                  location.reload(true);
+                } else if (data.state === 'FAILURE') {
+                  updateProgress(0, "Error al generar el reporte.");
+                  progressBar.classList.remove('progress-bar-animated');
+                } else {
+                  setTimeout(() => checkTaskStatus(task_id), 500);
+                }
+              })
+              .catch(error => {
+                updateProgress(0, "Error al consultar el estado.");
+              });
+          }
+
+          // Enviar solicitud inicial al servidor
+          fetch('analyze_video', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+              video_id: videoId,
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            checkTaskStatus(data.task_id);
+          })
+          .catch(error => {
+            updateProgress(0, "Error al iniciar el proceso.");
+            progressModal.hide();
+          });
+
+        });
+      } else {
+        return response.json().then(json => {
+          return response.ok ? json : Promise.reject(json);
+        });
+      }
+    }).catch(err => {
+      console.error(err);
+      Notiflix.Report.failure("Error", "Ha ocurrido un error al procesar el video", 'Ok');
+    });
+  });
+</script>

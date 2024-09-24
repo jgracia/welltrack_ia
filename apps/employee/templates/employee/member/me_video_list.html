@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
     titleAttr: '{{ _("New video") }}',
     attr: {'data-mdb-toggle': 'tooltip', },
     action: function(e, dt, node, config) {
-      openModal("{% url 'employee:video_new' %}");
+      openModal("{% url 'employee:me_video_new' %}");
     }
   };
 
