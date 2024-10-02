@@ -48,14 +48,6 @@ import json
 from .task import analyze_video_task
 # Create your views here.
 
-'''
-def employee_list(request):
-    context = {'segment': 'employee'}
-    template = loader.get_template('employee/employee_list.html')
-    return HttpResponse(template.render(context, request))
-'''
-
-
 class MixinFormInvalid:
     def form_invalid(self, form):
         response = super().form_invalid(form)
@@ -79,46 +71,6 @@ class EmployeeListView(ListView):
         context = super().get_context_data(**kwargs)
         context["segment"] = 'employee'
         return context
-
-
-'''
-class EmployeeNew(SuccessMessageMixin, MixinFormInvalid, CreateView):
-    model = User
-    template_name = "employee/employee_form.html"
-    context_object_name = "obj"
-    form_class = EmployeeForm
-    success_url = reverse_lazy("employee:employee_list")
-    success_message = _("Success: The new employee was created successfully.")
-
-
-class EmployeeEdit(SuccessMessageMixin, MixinFormInvalid, UpdateView):
-    model = User
-    template_name = "employee/employee_form.html"
-    context_object_name = "obj"
-    form_class = EmployeeForm
-    success_url = reverse_lazy("employee:employee_list")
-    success_message = _("Success: Employee successfully modified.")
-
-    def form_valid(self, form):
-        try:
-            response = super().form_valid(form)
-            is_ajax = self.request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-            if is_ajax:
-                return JsonResponse({
-                    'success': True,
-                })
-            else:
-                return response
-
-        except Exception as e:
-            # logging.error("Error: " + str(e))
-            # print("\n-> Error al guardar reforma...")
-            return JsonResponse({
-                'status': HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                # 'message': _(str(err))
-                'message': str(e),
-            }, status=500)
-'''
 
 
 def signup(request):
@@ -373,15 +325,6 @@ def work_shift_delete(request, pk):
                 return response
 
 
-'''
-def emotion_analysis(request):
-    context = {
-        
-    }
-    return render(request, 'employee/emotion_analysis/index.html', context)
-'''
-
-
 class VideoListView(ListView):
     """Devuelve lista de videos recolectados."""
 
@@ -395,68 +338,6 @@ class VideoListView(ListView):
         context = super().get_context_data(**kwargs)
         context["segment"] = 'emotion-video'
         return context
-
-
-'''
-class VideoNew(SuccessMessageMixin, MixinFormInvalid, CreateView):
-    model = EmotionAnalysis
-    template_name = "employee/video/video_form.html"
-    context_object_name = "obj"
-    form_class = EmotionAnalysisForm
-    success_url = reverse_lazy("employee:video_list")
-    success_message = _("Success: The new video was created successfully.")
-'''
-
-
-'''
-class VideoNew(SuccessMessageMixin, MixinFormInvalid, CreateView):
-    model = EmotionAnalysis
-    template_name = "employee/video/video_form.html"
-    context_object_name = "obj"
-    form_class = EmotionAnalysisForm
-    success_url = reverse_lazy("employee:video_list")
-    success_message = _("Success: The new video was created successfully.")
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-
-        # Ruta completa del archivo de video subido
-        video_path = os.path.join(settings.MEDIA_ROOT, self.object.video_file.name)
-
-        try:
-            # Procesar el video con el algoritmo DeepFace
-            # Aquí podrías extraer frames del video y analizarlos.
-            # Ejemplo de cómo podrías analizar un frame del video:
-            # frame = extraer_frame(video_path)
-            # result = DeepFace.analyze(frame, actions=['emotion'])
-
-            # Aquí se debe agregar el código para extraer frames y procesarlos con DeepFace
-            # Por ejemplo, podrías iterar sobre los frames y obtener el análisis de emociones.
-
-            result_summary, analysis_time, dominant_emotion, \
-                frame_count, duration = analyze_emotions(video_path)
-
-            # Guardar los resultados en el campo 'emotions_detected'
-            # 'result_summary' tiene que ser un JSON válido
-            self.object.emotions_detected = result_summary  
-            self.object.save()
-
-        except Exception as e:
-            return JsonResponse({
-                'status': 'error',
-                'message': str(e),
-            }, status=500)
-
-        is_ajax = self.request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-        if is_ajax:
-            data = {
-                'success': True,
-            }
-            return JsonResponse(data)
-        else:
-            return response
-'''
-
 
 class VideoNew(SuccessMessageMixin, MixinFormInvalid, CreateView):
     model = EmotionAnalysis
@@ -487,22 +368,6 @@ class VideoNew(SuccessMessageMixin, MixinFormInvalid, CreateView):
             return response
 
 
-'''
-def analyze_video(request, pk):
-    """Analiza el video subido."""
-    print("\n=> Parámetro recibido de frontend: ", pk)
-
-    video_obj = EmotionAnalysis.objects.get(pk=pk)
-    video_path = os.path.join(settings.MEDIA_ROOT, video_obj.video_file.name)
-    print("Video Path: ", video_path)
-
-    return JsonResponse({
-        'success': True,
-        'message': _("Video successfully analyzed."),
-    })
-'''
-
-
 def analyze_video(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -511,27 +376,6 @@ def analyze_video(request):
         task = analyze_video_task.apply_async(
             args=[video_id])
         return JsonResponse({"task_id": task.id}, status=202)
-
-'''
-def analyze_video_task_status(request, task_id):
-    task = AsyncResult(task_id)
-    if task.state == 'FAILURE':
-        response_data = {
-            'state': task.state,
-            'result': str(task.result),  # Convertir el error a string para evitar problemas de serialización
-        }
-    elif task.state == 'PROGRESS':
-        response_data = {
-            'state': task.state,
-            'result': task.info  # `task.info` debe contener el progreso
-        }
-    else:
-        response_data = {
-            'state': task.state,
-            'result': task.result,
-        }
-    return JsonResponse(response_data)
-'''
 
 
 def analyze_video_task_status(request, task_id):
@@ -672,15 +516,6 @@ def video_delete(request, pk):
                 return response
 
 
-'''
-def analytics(request):
-    context = {
-        'segment': 'analytics'
-    }
-    return render(request, 'employee/analytics/index.html', context)
-'''
-
-
 class AnalyticsListView(ListView):
     # model = EmotionAnalysis
     template_name = 'employee/analytics/analytics_list.html'
@@ -700,46 +535,6 @@ class AnalyticsListView(ListView):
 
 
 def analytics(request):
-    '''object_list = EmotionAnalysis.objects.all()
-    area_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(int))))
-    work_shift_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(int))))
-    hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-    employee_hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(int))))
-
-    for obj in object_list:
-        area = str(obj.profile.worker_area)
-        work_shift = str(obj.profile.work_shift)
-        recorded_at = obj.recorded_at
-        employee = str(obj.profile.user.username)
-        date = recorded_at.strftime('%Y-%m-%d')
-        hour = recorded_at.strftime('%H:00')
-        dominant_emotion = obj.emotions_detected['dominant_emotion']
-
-        # Asegurarse de que area_emotions[area][date][hour] sea un diccionario
-        if hour not in area_emotions[area][date]:
-            area_emotions[area][date][hour] = defaultdict(int)
-        area_emotions[area][date][hour][dominant_emotion] += 1
-
-        if hour not in work_shift_emotions[work_shift][date]:
-            work_shift_emotions[work_shift][date][hour] = defaultdict(int)
-        work_shift_emotions[work_shift][date][hour][dominant_emotion] += 1
-
-        if hour not in hourly_emotions[date]:
-            hourly_emotions[date][hour] = defaultdict(int)
-        hourly_emotions[date][hour][dominant_emotion] += 1
-
-        if hour not in employee_hourly_emotions[employee][date]:
-            employee_hourly_emotions[employee][date][hour] = defaultdict(int)
-        employee_hourly_emotions[employee][date][hour][dominant_emotion] += 1
-
-    area_emotions = {area: {date: {hour: dict(emotions) for hour, emotions in hours.items()} for date, hours in dates.items()} for area, dates in area_emotions.items()}
-    work_shift_emotions = {shift: {date: {hour: dict(emotions) for hour, emotions in hours.items()} for date, hours in dates.items()} for shift, dates in work_shift_emotions.items()}
-    hourly_emotions = {date: {hour: dict(emotions) for hour, emotions in hours.items()} for date, hours in hourly_emotions.items()}
-    employee_hourly_emotions = {employee: {date: {hour: dict(emotions) for hour, emotions in hours.items()} for date, hours in dates.items()} for employee, dates in employee_hourly_emotions.items()}'''
-
-    # day = timezone.now()
-    # formatedDay = day.strftime("%Y-%m-%d")
-
     current_date = datetime.now().date()
     # Obtener la fecha y hora actual
     now = datetime.now()
@@ -757,10 +552,6 @@ def analytics(request):
 
     context = {
         'segment': 'analytics',
-        #'area_emotions': area_emotions,
-        #'work_shift_emotions': work_shift_emotions,
-        #'hourly_emotions': hourly_emotions,
-        #'employee_hourly_emotions': employee_hourly_emotions
         'worker_area_list': worker_area_list,
         'work_shift_list': work_shift_list,
         'current_date': current_date.strftime('%Y-%m-%d'),
@@ -777,12 +568,6 @@ def get_worker_area_emotions(request):
     worker_area = data["worker_area"]
     start_date = data["start_date"]
     end_date = data["end_date"]
-
-    """print("\n-> Parametros recibidos")
-    print("worker_area = %s" % worker_area)  # 2
-    print("start_date = %s" % start_date)  # 2024-09-06
-    print("end_date = %s" % end_date)  # 2024-09-06
-    print("\n")"""
 
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
     if is_ajax:
@@ -829,99 +614,6 @@ def get_worker_area_emotions(request):
             'status': _("Failure"),
             'message': _("Incorrect request"),
         }, status=500)
-
-
-'''
-# funciona prefecto, no coincide con hora de base de datos
-def get_worker_area_chart_data(request):
-    data = json.loads(request.body)
-    worker_area_id = data["worker_area"]
-    start_date = data["start_date"]
-    end_date = data["end_date"]
-
-    # date_obj = datetime.strptime(date, '%Y-%m-%d')
-    object_list = EmotionAnalysis.objects.filter(
-        recorded_at__date__range=(start_date, end_date))
-
-    # Si se ha proporcionado un área específica, filtrar por ella
-    if worker_area_id and worker_area_id != '0':
-        object_list = object_list.filter(profile__worker_area__id=worker_area_id)
-
-    # Inicializar las estructuras de datos
-    area_hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-    all_areas = set()
-    all_emotions = set()
-
-    if object_list.exists():
-        # Obtener las emociones detectadas y las áreas de trabajo
-        all_emotions = object_list.first().emotions_detected.get('emotions', {}).keys()
-        all_areas = {obj.profile.worker_area.name for obj in object_list if obj.profile.worker_area}
-
-    # Inicializar los datos para todas las combinaciones de áreas y horas
-    for area in all_areas:
-        for hour in range(24):
-            hour_label = f'{str(hour).zfill(2)}:00'
-            for emotion in all_emotions:
-                area_hourly_emotions[area][hour_label][emotion] = 0
-
-    # Procesar los datos de los objetos obtenidos
-    for obj in object_list:
-        if obj.profile.worker_area:
-            area = obj.profile.worker_area.name
-            recorded_at = obj.recorded_at
-            hour = recorded_at.strftime('%H:00')
-            dominant_emotion = obj.emotions_detected['dominant_emotion']
-
-            # Actualizar los datos por área y hora
-            area_hourly_emotions[area][hour][dominant_emotion] += 1
-
-    # Crear etiquetas combinadas de área y hora
-    labels_with_data = []
-    for area in sorted(all_areas):
-        for hour in range(24):
-            hour_label = f'{str(hour).zfill(2)}:00'
-            # Si hay datos en esa área y hora
-            if any(area_hourly_emotions[area][hour_label][emotion] > 0 for emotion in all_emotions):
-                labels_with_data.append(f'{area} - {hour_label}')
-
-    # Crear datasets para el gráfico por áreas (con emociones)
-    area_datasets = []
-    colors = [
-        'rgba(75, 192, 192, 0.75)',  # #4bc0c0
-        'rgba(0, 123, 255, 0.75)',   # #007bff
-        'rgba(255, 131, 0, 0.75)',   # #FF8300
-        'rgba(255, 87, 51, 0.75)',   # #FF5733
-        'rgba(199, 0, 57, 0.75)',    # #C70039
-        'rgba(144, 12, 63, 0.75)',   # #900C3F
-        'rgba(88, 24, 69, 0.75)'     # #581845
-    ]
-
-    # Crear un dataset para cada emoción
-    for i, emotion in enumerate(all_emotions):
-        emotion_data = []
-        for area in sorted(all_areas):
-            for hour in range(24):
-                hour_label = f'{str(hour).zfill(2)}:00'
-                if f'{area} - {hour_label}' in labels_with_data:
-                    emotion_data.append(area_hourly_emotions[area][hour_label][emotion])
-
-        area_datasets.append({
-            'label': _(emotion),
-            'data': emotion_data,
-            'fill': 'false',
-            'borderColor': colors[i % len(colors)].replace('0.75', '1'),
-            'backgroundColor': colors[i % len(colors)],
-            'borderWidth': 1,
-        })
-
-    # Empaquetar los datos para el gráfico por áreas
-    data = {
-        'labels': labels_with_data,  # Etiquetas con área y hora
-        'datasets': area_datasets    # Datos de emociones por área y hora
-    }
-
-    return JsonResponse(data)
-'''
 
 
 def get_worker_area_chart_data(request):
@@ -1073,126 +765,6 @@ def get_work_shift_emotions(request):
             'status': _("Failure"),
             'message': _("Incorrect request"),
         }, status=500)
-
-
-'''
-def get_work_shift_chart_data(request):
-    data = json.loads(request.body)
-    work_shift_id = data["work_shift"]
-    start_date = data["start_date"]
-    end_date = data["end_date"]
-
-    # Obtener los registros de emociones dentro del rango de fechas
-    object_list = EmotionAnalysis.objects.filter(
-        recorded_at__date__range=(start_date, end_date))
-
-    # Si se ha proporcionado un turno de trabajo específico, filtrar por él
-    if work_shift_id and work_shift_id != '0':
-        try:
-            work_shift = WorkShift.objects.get(id=work_shift_id)
-            print(f"Work Shift ID: {work_shift_id}, Start: {work_shift.start_time}, End: {work_shift.end_time}")
-        except WorkShift.DoesNotExist:
-            return JsonResponse({'error': 'Turno de trabajo no válido.'}, status=400)
-
-        shift_start = work_shift.start_time
-        shift_end = work_shift.end_time
-
-        # Verificar si el turno cruza la medianoche o no
-        if shift_start > shift_end:
-            print(f"Turno cruza la medianoche: {work_shift.name}")
-            object_list = object_list.filter(
-                Q(recorded_at__time__gte=shift_start) |
-                Q(recorded_at__time__lt=shift_end),
-                profile__work_shift=work_shift
-            )
-        else:
-            print(f"Turno no cruza la medianoche: {work_shift.name}")
-            object_list = object_list.filter(
-                recorded_at__time__range=(shift_start, shift_end),
-                profile__work_shift=work_shift
-            )
-
-        # Verificar cuántos registros se obtienen después de aplicar el filtro
-        print(f"Registros después de aplicar el filtro para el turno {work_shift.name}: {object_list.count()}")
-
-    # Si no se especifica un turno o se seleccionan todos los turnos (work_shift_id = 0)
-    print(f"Total de registros obtenidos: {object_list.count()}")
-
-    # Inicializar las estructuras de datos
-    work_shift_hourly_emotions = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-    all_work_shifts = set()
-    all_emotions = set()
-
-    if object_list.exists():
-        # Obtener las emociones detectadas y los turnos de trabajo
-        all_emotions = object_list.first().emotions_detected.get('emotions', {}).keys()
-        all_work_shifts = {obj.profile.work_shift.name for obj in object_list if obj.profile.work_shift}
-
-    # Inicializar los datos para todas las combinaciones de turnos y horas
-    for shift in all_work_shifts:
-        for hour in range(24):
-            hour_label = f'{str(hour).zfill(2)}:00'
-            for emotion in all_emotions:
-                work_shift_hourly_emotions[shift][hour_label][emotion] = 0
-
-    # Procesar los datos de los objetos obtenidos
-    for obj in object_list:
-        if obj.profile.work_shift:
-            shift = obj.profile.work_shift.name
-            recorded_at = obj.recorded_at
-            hour = recorded_at.strftime('%H:00')
-            dominant_emotion = obj.emotions_detected['dominant_emotion']
-
-            # Actualizar los datos por turno y hora
-            work_shift_hourly_emotions[shift][hour][dominant_emotion] += 1
-
-    # Crear etiquetas combinadas de turno y hora
-    labels_with_data = []
-    for shift in sorted(all_work_shifts):
-        for hour in range(24):
-            hour_label = f'{str(hour).zfill(2)}:00'
-            # Si hay datos en ese turno y hora
-            if any(work_shift_hourly_emotions[shift][hour_label][emotion] > 0 for emotion in all_emotions):
-                labels_with_data.append(f'{shift} - {hour_label}')
-
-    # Crear datasets para el gráfico por turnos (con emociones)
-    work_shift_datasets = []
-    colors = [
-        'rgba(75, 192, 192, 0.75)',  # #4bc0c0
-        'rgba(0, 123, 255, 0.75)',   # #007bff
-        'rgba(255, 131, 0, 0.75)',   # #FF8300
-        'rgba(255, 87, 51, 0.75)',   # #FF5733
-        'rgba(199, 0, 57, 0.75)',    # #C70039
-        'rgba(144, 12, 63, 0.75)',   # #900C3F
-        'rgba(88, 24, 69, 0.75)'     # #581845
-    ]
-
-    # Crear un dataset para cada emoción
-    for i, emotion in enumerate(all_emotions):
-        emotion_data = []
-        for shift in sorted(all_work_shifts):
-            for hour in range(24):
-                hour_label = f'{str(hour).zfill(2)}:00'
-                if f'{shift} - {hour_label}' in labels_with_data:
-                    emotion_data.append(work_shift_hourly_emotions[shift][hour_label][emotion])
-
-        work_shift_datasets.append({
-            'label': emotion,
-            'data': emotion_data,
-            'fill': 'false',
-            'borderColor': colors[i % len(colors)].replace('0.75', '1'),
-            'backgroundColor': colors[i % len(colors)],
-            'borderWidth': 1,
-        })
-
-    # Empaquetar los datos para el gráfico por turnos
-    data = {
-        'labels': labels_with_data,  # Etiquetas con turno y hora
-        'datasets': work_shift_datasets  # Datos de emociones por turno y hora
-    }
-
-    return JsonResponse(data)
-'''
 
 
 # función perfecta coincide con las horas de la base de datos

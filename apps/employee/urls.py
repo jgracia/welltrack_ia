@@ -6,13 +6,8 @@ from . import views
 app_name = 'employee'
 
 urlpatterns = [
-    # path('', views.employee_list, name='employee_list'),
     path('', login_required(views.EmployeeListView.as_view()),
          name='employee_list'),
-    # path('new/', login_required(views.EmployeeNew.as_view()),
-    #     name='employee_new'),
-    # path('edit/<int:pk>', login_required(views.EmployeeEdit.as_view()),
-    #      name='employee_edit'),
     path('signup/', login_required(views.signup), name='signup'),
     path('edit/<int:pk>', login_required(views.edit_employee), name='edit_employee'),
     path('profile/', login_required(views.profile), name='users-profile'),
@@ -42,8 +37,6 @@ urlpatterns = [
          name='work_shift_delete'),
 
     # ruta análisis de emociones
-    # path('emotion_analysis', login_required(views.emotion_analysis), 
-    #     name='emotion_analysis'),
     path('video_list', login_required(views.VideoListView.as_view()),
          name='video_list'),
     path('video/new/', login_required(views.VideoNew.as_view()),
@@ -60,8 +53,6 @@ urlpatterns = [
 
     # rutas Analytics
     path('analytics', login_required(views.analytics), name='analytics'),
-    # path('analytics', login_required(views.AnalyticsListView.as_view()),
-    #     name='analytics'),
 
     path('get_worker_area_emotions/', login_required(views.get_worker_area_emotions),
          name='get_worker_area_emotions'),

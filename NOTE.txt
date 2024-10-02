@@ -1,5 +1,0 @@
-# Listar versión de Pyhton
-pyenv versions
-
-# Cambiar versión de Python
-pyenv local 3.12.3

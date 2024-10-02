@@ -185,29 +185,3 @@ class EmotionAnalysis(models.Model):
                 old_instance.video_file.delete(save=False)  # Elimina el archivo anterior si se ha cambiado
 
         super().save(*args, **kwargs)  # Guarda el archivo primero para asegurar que esté disponible
-
-        '''
-        # Extraer la fecha de grabación del video (metadato)
-        if self.video_file:
-            print("ingreso aca...")
-            try:
-                video_path = self.video_file.path  # Ruta del archivo de video
-                print("obtubo la ruta................")
-                probe = ffmpeg.probe(video_path)
-                print("paso probe.-..")
-                format_info = probe.get('format', {})
-                print(format_info)
-                creation_time = format_info.get('tags', {}).get('creation_time')
-
-                print("fecha de creacion : ", creation_time)
-
-                if creation_time:
-                    # Convertir la fecha extraída a un objeto datetime
-                    self.recorded_at = datetime.strptime(creation_time, '%Y-%m-%dT%H:%M:%S.%fZ')
-            except ffmpeg.Error as e:
-                print(f"Error al extraer metadatos con ffmpeg: {e}")
-            except Exception as e:
-                print(f"Error inesperado al extraer metadatos: {e}")
-
-        super().save(*args, **kwargs)  # Guarda nuevamente para actualizar el campo recorded_at
-        '''

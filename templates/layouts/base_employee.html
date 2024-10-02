@@ -30,8 +30,6 @@
 
   <script>
     function confirmDelete(url, pk) {
-      //console.log("Direccion: ", url);
-      //console.log("PK: ", pk);
 
       Notiflix.Confirm.init({
         titleColor:"#ff5549", okButtonBackground:"#ff5549",
@@ -48,10 +46,6 @@
         okButtonText,
         cancelButtonText,
         function(){
-          // Función botón SI
-          //var url = url;
-          //var data = {codigo: pk};
-    
           fetch(url, {
             method: 'POST', // The method
             headers: {
@@ -60,35 +54,24 @@
             },
             body: JSON.stringify({ 'pk': pk })
           }).then(response => {
-            // Do whatever with returnedData
-            // console.log(response)
             if (response.ok) {
               location.reload(true);
             } else {
-              //return Promise.reject('Something went wrong!')
               return response.json().then(json => {
                 return response.ok ? json : Promise.reject(json);
               });
             }
           }).catch(err => {
-    
-            // In case it errors.
-            // console.log('Hubo un problema con la petición Fetch:' + err.message);
-    
             const appName = document.querySelector('meta[name="app-name"]').content;
             const errorTitle = appName + " - {{ _('Failure') }}";
     
-            //console.log(err)
             var message = "";
             for (var key in err) {
-              //console.log("key " + key + " has value " + err[key]);
-              //console.log(key + ":" + err[key]);
               message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
             }
     
             Notiflix.Report.init({
               plainText: false,
-              //svgSize:"60px",
               messageMaxLength: 1024,
             });
             Notiflix.Report.failure(
@@ -98,10 +81,6 @@
             );
           })
         },
-        /*function(){
-          // Función botón NO
-          alert('If you say so...');
-        }*/
       );
     }
   </script>

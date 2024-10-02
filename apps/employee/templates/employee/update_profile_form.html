@@ -14,29 +14,6 @@
 
       <div class="modal-body">
         <p class="font-bold mb-0">{{ _("Complete the following form and click the <i>Save</i> button.") }}</p>
-
-        
-        
-          <!--
-          <div class="form-row">
-            <div class="col-md-5">
-              <div class="form-group">
-                <label class="small mb-1">Nombre de usuario:</label>
-                    {{ user_form.username }}
-                <label class="small mb-1">Correo electrónico:</label>
-                    {{ user_form.email }}
-              </div>
-              <div class="form-group">
-                <a href="#">Cambiar contraseña</a>
-                <hr>
-                <label class="small mb-1">Cambiar Avatar:</label>
-                {{ profile_form.image }}
-              </div>
-              <label class="small mb-1">Biografía:</label> {{ profile_form.bio }}
-            </div>
-          </div>
-          <br><br>
-          -->
           
           {{ user_form.as_p }}
           
@@ -71,19 +48,8 @@
 
   jQuery(document).ready(function() {
 
-    //var token = jQuery("[name=csrfmiddlewaretoken]").val();
-
     jQuery("form").submit(function(event) {
       event.preventDefault();
-
-      // desactivar botón cerrar
-      //var btnClose = document.getElementById('btnClose');
-      //btnClose.disabled = true;
-
-      // desactivar botón guardar
-      /*var button = document.getElementById('btnSubmit');
-      button.disabled = true;
-      button.innerText = "Por favor espere...";*/
 
       const url = this.action;
       const formData = new FormData(event.currentTarget)
@@ -107,22 +73,11 @@
           });
         }
       }).catch(err => {
-        // habilita botón submit
-        //btnClose.disabled = false;
-        /*button.disabled = false;
-        button.innerText = "Guardar";*/
-
-        // In case it errors.
-        // console.log(err)
         const app = document.querySelector('meta[name="app-name"]').content;
         const title = app + " - {{ _('Failure') }}";
-        //const title = "Falla"
 
-        //console.log(err)
         var message = "";
         for (var key in err) {
-          //console.log("key " + key + " has value " + err[key]);
-          //console.log(key + ":" + err[key]);
           message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
         }
 

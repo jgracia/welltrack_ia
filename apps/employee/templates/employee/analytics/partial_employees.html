@@ -9,11 +9,6 @@
     <td>{{ qs.profile.worker_area }}</td>
     <td>{{ qs.recorded_at|naturalday }}</td>
     <td>
-      <!--
-      {% for emotion, value in qs.emotions_detected.emotions.items %}
-        {{ emotion }}: {{ value|floatformat:2 }}%<br>
-      {% endfor %}
-      -->
       {% for emotion, value in qs.emotions_detected.emotions.items %}
         {% if emotion == 'sad' %}
           😢

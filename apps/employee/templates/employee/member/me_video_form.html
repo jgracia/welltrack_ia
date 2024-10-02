@@ -60,10 +60,6 @@
   // Función para manejar la cámara y mostrar el video
   async function startCamera() {
     try {
-      //const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      /*const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: 640, height: 480 }  // Reducir resolución para archivos más pequeños
-      });*/
       
       // Solicitar acceso tanto al video como al audio
       const stream = await navigator.mediaDevices.getUserMedia({

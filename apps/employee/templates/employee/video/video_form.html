@@ -4,15 +4,11 @@
 <!-- Modal -->
 <div class="modal-dialog">
   <div class="modal-content">
-    {% if obj %}
-    <form role="form" action="{% url 'employee:video_edit' obj.pk %}" method="post" autocomplete="off">
-    {% else %}
     <form role="form" action="{% url 'employee:video_new' %}" method="post" autocomplete="off">
-    {% endif %}
       {% csrf_token %}
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title" id="extraModalLabel">
-          {% if obj %} {{ _("Upload video") }} {% else %} {{ _("Change video") }} {% endif %}
+          {{ _("Upload video") }}
         </h5>
         <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -55,14 +51,9 @@
       },
       body: formData,
     }).then(response => {
-      // Do whatever with returnedData
       if (response.ok) {
-        //location.reload(true);
         return response.json().then(json => {
-          //console.log(json)
-          //console.log("Procesar video pk = " + json.pk)
           
-          // Cierra la ventana modal de subir video
           closeModal()
           
           let videoId = json.pk
@@ -135,23 +126,17 @@
 
         });
       } else {
-        //return Promise.reject('Something went wrong!')
         return response.json().then(json => {
           return response.ok ? json : Promise.reject(json);
         });
       }
     }).catch(err => {
-      // In case it errors.
-      // console.log(err)
       const app = document.querySelector('meta[name="app-name"]').content;
       const title = app + " - {{ _('Failure') }}";
-      //const title = "Falla"
 
-      //console.log(err)
       var message = "";
       for (var key in err) {
-        //console.log("key " + key + " has value " + err[key]);
-        //console.log(key + ":" + err[key]);
+
         message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
       }
 

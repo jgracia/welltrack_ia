@@ -47,27 +47,18 @@
       },
       body: formData,
     }).then(response => {
-      // Do whatever with returnedData
       if (response.ok) {
         location.reload(true);
       } else {
-        //return Promise.reject('Something went wrong!')
         return response.json().then(json => {
           return response.ok ? json : Promise.reject(json);
         });
       }
     }).catch(err => {
-      // In case it errors.
-      // console.log(err)
       const app = document.querySelector('meta[name="app-name"]').content;
       const title = app + " - {{ _('Failure') }}";
-      //const title = "Falla"
-
-      //console.log(err)
       var message = "";
       for (var key in err) {
-        //console.log("key " + key + " has value " + err[key]);
-        //console.log(key + ":" + err[key]);
         message += "<strong>" + key + " : </strong>" + err[key] + "<br>";
       }
 
